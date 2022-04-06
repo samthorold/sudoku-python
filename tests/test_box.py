@@ -1,46 +1,6 @@
 import pytest
 
-from sudoku import Board, box, main
-
-
-STRING = (
-    "53..7...."
-    "6..195..."
-    ".98....6."
-    "8...6...3"
-    "4..8.3..1"
-    "7...2...6"
-    ".6....28."
-    "...419..5"
-    "....8..79"
-)
-
-
-def test_board_str():
-    got = str(Board.from_string(STRING))
-    expected = (
-        "53.|.7.|...\n"
-        "6..|195|...\n"
-        ".98|...|.6.\n"
-        "---|---|---\n"
-        "8..|.6.|..3\n"
-        "4..|8.3|..1\n"
-        "7..|.2.|..6\n"
-        "---|---|---\n"
-        ".6.|...|28.\n"
-        "...|419|..5\n"
-        "...|.8.|.79\n"
-    )
-    assert got == expected
-
-
-def test_neighbours():
-    board = Board.from_string(STRING)
-    assert "".join(sorted(set(c.val for c in board.neighbours["31"]))) == ".356789"
-
-
-def test_candidates():
-    assert Board.from_string(STRING).candidates("31") == "124"
+from sudoku import box
 
 
 @pytest.mark.parametrize(

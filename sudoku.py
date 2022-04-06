@@ -29,7 +29,7 @@ def box(col, row):
     return (col - 1) // 3 + 3 * ((row - 1) // 3) + 1
 
 
-@dataclass
+@dataclass(slots=True)
 class Cell:
     col: str
     row: str
@@ -111,6 +111,8 @@ class Board:
         return s
 
     def candidates(self, addr: str) -> str:
+        if self[addr].val in self.OPTIONS:
+            return self[addr].val
         return "".join(
             sorted(set(self.OPTIONS) - set(c.val for c in self.neighbours[addr]))
         )
@@ -118,7 +120,7 @@ class Board:
     def next(self, addr: str) -> str:
         col, row = [int(x) for x in addr]
         if col == self.SIZE and row == self.SIZE:
-            return
+            return "11"
         if col < self.SIZE:
             return f"{col + 1}{row}"
         return f"1{row + 1}"
@@ -128,33 +130,37 @@ class Board:
         board[addr].val = val
         return board
 
+    def is_completed(self) -> bool:
+        return all(c.val in self.OPTIONS for _, c in self.cells.items())
+
 
 def candidate_boards(board: Board, addr: str, depth: int = 0) -> Iterator[Board]:
-    while board[addr].val != ".":
-        addr = board.next(addr)
-    if not (candidates := board.candidates(addr)):
-        return
-    for candidate in candidates:
+    for candidate in board.candidates(addr):
         cboard = board.set_val(addr, candidate)
         yield cboard
         naddr = board.next(addr)
         yield from candidate_boards(cboard, naddr, depth=depth + 1)
 
 
-def main(string: str, iterations: int = 10000, display: bool = False) -> Board:
+def main(string: str, iterations: int = 10000, display: bool = False) -> tuple[Board, int]:
     """Solve a sudoku puzzle."""
 
+    trials = 0
     board = Board.from_string(string)
     candidates = candidate_boards(board, "11")
     for _ in range(iterations):
-        cboard = next(candidates)
+        if board.is_completed():
+            break
+        board = next(candidates)
+        trials += 1
         if display:
-            print(cboard)
+            print(trials)
+            print(board)
 
-    return cboard
+    return board, trials
 
 
 if __name__ == "__main__":
-    string, it, displ = sys.argv[1:]
+    board_string, it, displ = sys.argv[1:]
 
-    _ = main(string, int(it), bool(displ))
+    _ = main(board_string, int(it), bool(displ))
