@@ -1,4 +1,4 @@
-from sudoku import Board
+from sudoku.board import Board
 
 
 def test_board_str(board_string):

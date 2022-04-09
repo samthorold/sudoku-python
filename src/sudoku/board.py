@@ -1,13 +1,5 @@
-"""
-
-https://en.wikipedia.org/wiki/Sudoku
-
-"""
-
 import copy
 from dataclasses import dataclass
-import sys
-from typing import Iterator
 
 
 BOARDS = [
@@ -132,35 +124,3 @@ class Board:
 
     def is_completed(self) -> bool:
         return all(c.val in self.OPTIONS for _, c in self.cells.items())
-
-
-def candidate_boards(board: Board, addr: str, depth: int = 0) -> Iterator[Board]:
-    for candidate in board.candidates(addr):
-        cboard = board.set_val(addr, candidate)
-        yield cboard
-        naddr = board.next(addr)
-        yield from candidate_boards(cboard, naddr, depth=depth + 1)
-
-
-def main(string: str, iterations: int = 10000, display: bool = False) -> tuple[Board, int]:
-    """Solve a sudoku puzzle."""
-
-    trials = 0
-    board = Board.from_string(string)
-    candidates = candidate_boards(board, "11")
-    for _ in range(iterations):
-        if board.is_completed():
-            break
-        board = next(candidates)
-        trials += 1
-        if display:
-            print(trials)
-            print(board)
-
-    return board, trials
-
-
-if __name__ == "__main__":
-    board_string, it, displ = sys.argv[1:]
-
-    _ = main(board_string, int(it), bool(displ))

@@ -1,6 +1,6 @@
 import pytest
 
-from sudoku import box
+from sudoku.board import box
 
 
 @pytest.mark.parametrize(
