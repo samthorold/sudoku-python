@@ -1,3 +1,9 @@
+"""
+
+https://en.wikipedia.org/wiki/Dancing_Links
+
+"""
+
 from __future__ import annotations
 from dataclasses import dataclass
 from typing import Iterator, Iterable, TypeVar
