@@ -1,6 +1,9 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Iterator
+from typing import Iterator, Iterable, TypeVar
+
+
+T = TypeVar("T")
 
 
 @dataclass
@@ -28,7 +31,7 @@ def insert_after(node: Node, new: Node) -> Node:
     return new
 
 
-def pairs(nodes: Iterator[Node]) -> Iterator[tuple[Node, Node]]:
+def pairs(nodes: Iterable[T]) -> Iterator[tuple[T, T]]:
     pair = []
     for node in nodes:
         pair.append(node)
@@ -38,7 +41,7 @@ def pairs(nodes: Iterator[Node]) -> Iterator[tuple[Node, Node]]:
             pair = pair[-1:]
 
 
-def create_list(nodes: Iterator[Node]):
+def create_list(nodes: Iterable[Node]):
     for left, right in pairs(nodes):
         yield insert_after(left, right)
 
