@@ -39,8 +39,8 @@ def pairs(nodes: Iterator[Node]) -> Iterator[tuple[Node, Node]]:
 
 
 def create_list(nodes: Iterator[Node]):
-    for l, r in pairs(nodes):
-        yield insert_after(l, r)
+    for left, right in pairs(nodes):
+        yield insert_after(left, right)
 
 
 def forwards(node: Node) -> Iterator[Node]:
