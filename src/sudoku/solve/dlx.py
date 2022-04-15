@@ -28,7 +28,7 @@ def insert_after(node: Node, new: Node) -> Node:
     return new
 
 
-def pairs(nodes: Iterable[Node]) -> Iterator[tuple[Node, Node]]:
+def pairs(nodes: Iterator[Node]) -> Iterator[tuple[Node, Node]]:
     pair = []
     for node in nodes:
         pair.append(node)
@@ -38,13 +38,12 @@ def pairs(nodes: Iterable[Node]) -> Iterator[tuple[Node, Node]]:
             pair = pair[-1:]
 
 
-def create_list(nodes: Iterable[Node]):
+def create_list(nodes: Iterator[Node]):
     for l, r in pairs(nodes):
         yield insert_after(l, r)
 
 
 def forwards(node: Node) -> Iterator[Node]:
     yield node
-    while (node := node.right):
+    while node := node.right:
         yield node
-

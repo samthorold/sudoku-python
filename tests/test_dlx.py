@@ -77,7 +77,7 @@ def test_create_list():
     nodes = [dlx.Node(i) for i in range(1, 5)]
     for l, r in dlx.pairs(nodes):
         dlx.insert_after(l, r)
-    
+
     it = dlx.forwards(nodes[0])
     assert [n.val for n in it] == [1, 2, 3, 4]
 
@@ -85,7 +85,7 @@ def test_create_list():
     nodes += [nodes[0]]
     for l, r in dlx.pairs(nodes):
         dlx.insert_after(l, r)
-    
+
     it = []
     for i, n in enumerate(dlx.forwards(nodes[0]), 1):
         it.append(n.val)
@@ -93,4 +93,3 @@ def test_create_list():
             break
 
     assert it == [1, 2, 3, 4, 1, 2, 3, 4, 1, 2]
-
