@@ -81,7 +81,7 @@ def insert_after(node: Node, new: Node) -> Node:
 
 def pairs(nodes: Iterable[T]) -> Iterator[tuple[T, T]]:
     it = iter(nodes)
-    l =  next(it)
+    l = next(it)
     for node in it:
         yield (l, node)
         l = node
