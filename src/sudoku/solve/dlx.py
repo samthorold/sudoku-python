@@ -80,13 +80,11 @@ def insert_after(node: Node, new: Node) -> Node:
 
 
 def pairs(nodes: Iterable[T]) -> Iterator[tuple[T, T]]:
-    pair = []
-    for node in nodes:
-        pair.append(node)
-        if len(pair) > 1:
-            yield tuple(pair)
-        if len(pair) >= 2:
-            pair = pair[-1:]
+    it = iter(nodes)
+    l =  next(it)
+    for node in it:
+        yield (l, node)
+        l = node
 
 
 def create_list(nodes: Iterable[Node]):
