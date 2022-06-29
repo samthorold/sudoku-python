@@ -54,45 +54,131 @@ from typing import Iterator, Iterable, TypeVar
 T = TypeVar("T")
 
 
+PROBLEM = (
+    (0, 0, 1, 0, 1, 1, 0),
+    (1, 0, 0, 1, 0, 0, 1),
+    (0, 1, 1, 0, 0, 1, 0),
+    (1, 0, 0, 1, 0, 0, 0),
+    (0, 1, 0, 0, 0, 0, 1),
+    (0, 0, 0, 1, 1, 0, 1),
+)
+
+
 @dataclass
 class Node:
-    val: int
+    """Node representing a 1 in the dancing links algorithm to solve the exact
+    cover problem.
+
+    Nodes are not necessarily adjacent in terms of row, column index.
+
+    Attributes:
+        left: Previous Node by moving along the columns
+        right: Next Node by moving along the columns
+        down: Previous Node by moving along the rows
+        up: Next Node by moving along the rows
+        col: Column header
+
+    """
+
+    col: Column
     left: Node | None = None
     right: Node | None = None
+    up: Node | None = None
+    down: Node | None = None
 
 
-def insert_before(node: Node, new: Node) -> Node:
-    if node.left:
-        node.left.right = new
-        new.left = node.left
-    new.right = node
-    node.left = new
-    return new
+@dataclass
+class Column:
+    """
+
+    Attributes:
+        node: First Node in the column
+        col: Root Column containing all active columns
+        size: Number of Nodes in the column
+        name: Human readable name for showing solution
+
+    """
+    name: str
+    left: Column | None = None
+    right: Column | None = None
+    up: Node | None = None
+    down: Node | None = None
+
+    @property
+    def size(self):
+        n = 0
+        down = self.down
+        while down and not isinstance(down, Column):
+            n += 1
+            down = down.down
+        return n
 
 
-def insert_after(node: Node, new: Node) -> Node:
-    if node.right:
-        new.right = node.right
-        new.right.left = new
-    new.left = node
-    node.right = new
-    return new
+@dataclass
+class Problem:
+    """"""
+    cols: list[Column]
 
 
-def pairs(nodes: Iterable[T]) -> Iterator[tuple[T, T]]:
-    it = iter(nodes)
-    l = next(it)
-    for node in it:
-        yield (l, node)
-        l = node
+def build_problem(
+    matrix: Iterable[Iterable[int]],
+) -> Problem:
+    """Build a Problem object from an iterable of rows."""
+    root = Column("root")
+
+    cols: list[Column] = []
+
+    for i, row in enumerate(matrix):
+        left = None
+        for j, elem in enumerate(row):
+            if i == 0:
+                cols.append(Column(str(j)))
+                if j == 1:
+                    cols[j].left = cols[j-1]
+                    cols[j-1].right = cols[j]
+            if i == 1:
+                cols[-1].right = cols[0]
+                cols[0].left = cols[-1]
+            if elem:
+                node = Node(col=cols[j])
+                if not cols[j].down:
+                    cols[j].down = node
+                else:
+                    up = node.col.down
+                    while up.down and not isinstance(up, Column):
+                        up = up.down
+                    node.up = up
+                    up.down = node
+                if left:
+                    node.left = left
+                    left.right = node
+                    left = node
+                
+
+    # point all the bottom nodes back to the top nodes and vice versa
+    # and all the right nodes back the left nodes and vice versa
+    for col in cols:
+        bottom = col.down
+        while bottom.down:
+            bottom = bottom.down
+        bottom.down = col.down
+        col.up = bottom
+        col.down.up = bottom
+
+    return Problem(cols)
 
 
-def create_list(nodes: Iterable[Node]):
-    for left, right in pairs(nodes):
-        yield insert_after(left, right)
+def choose_column(pr: Problem) -> Column:
+    """Choose the next Column object to cover."""
 
 
-def forwards(node: Node) -> Iterator[Node]:
-    yield node
-    while node := node.right:
-        yield node
+def cover(col: Column) -> Problem:
+    """Exclude the Column and associated rows from the search."""
+
+
+def uncover(col: Column) -> Problem:
+    """Include the Column and associated rows in the search."""
+
+
+def solve(pr: Problem, depth: int = 0) -> Problem:
+    """Recursive algorithm for exact cover problem."""
