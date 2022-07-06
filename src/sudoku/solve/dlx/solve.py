@@ -27,15 +27,17 @@ def cover(col: Column):
 
     logger.debug(f"{col.left.right=}, {col.right.left=}")
 
-    cover_node = col.down
-    cover_col_ix = cover_node.col_idx
+    if col.down == col:
+        return
 
-    while not isinstance(cover_node, Column) and cover_node.down:
+    cover_node = col.down
+
+    while not isinstance(cover_node, Column):  # and cover_node.down:
         logger.debug(f"{cover_node=}")
 
         node = cover_node.right
 
-        while node.col_idx != cover_col_ix:
+        while node != cover_node:
             logger.info(f"Removing {node}")
             node.up.down = node.down
             node.down.up = node.up
@@ -51,14 +53,13 @@ def uncover(col: Column):
     logger.info(f"Uncovering {col}")
 
     cover_node = col.up
-    cover_col_ix = cover_node.col_idx
 
-    while not isinstance(cover_node, Column) and cover_node.up:
+    while not isinstance(cover_node, Column):  # and cover_node.up:
         logger.debug(f"{cover_node=}")
 
         node = cover_node.left
 
-        while node.col_idx != cover_col_ix:
+        while node != cover_node:
             logger.info(f"Adding {node}")
             node.up.down = node
             node.down.up = node
@@ -76,7 +77,8 @@ def uncover(col: Column):
 def search(pr: Problem, depth: int = 0):
     """Recursive algorithm for exact cover problem."""
 
-    logging.info(f"{depth=}")
+    logger.info(f"{depth=}")
+    logger.info("COLS: "+", ".join(str(c) for c in pr.active_cols))
 
     # breakpoint()
 
@@ -96,8 +98,10 @@ def search(pr: Problem, depth: int = 0):
             cover(right.col)
             right = right.right
         search(pr, depth + 1)
+        logger.info("COLS: " + ", ".join(str(c) for c in pr.active_cols))
         left = down.left
         while left and left != down:
             uncover(left.col)
             left = left.left
+        down = down.down
     uncover(col)
