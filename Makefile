@@ -1,5 +1,5 @@
 test-watch:
-	find src tests -name "*.py" | entr venv/bin/python -m pytest
+	find src tests -name "*.py" | entr venv/bin/python -m pytest -vv
 
 fmt-watch:
 	find src tests -name "*.py" | entr venv/bin/python -m black src tests
