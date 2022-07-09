@@ -135,7 +135,10 @@ class Problem:
         root = Column("__root__", -1)
 
         cols: list[Column] = []
-        ncols = itertools.count(0) if column_names is None else column_names
+        if column_names is None:
+            ncols = (str(i) for i in itertools.count(0))
+        else:
+            ncols = column_names
 
         for i, row in enumerate(matrix):
             if i == 1:
@@ -143,10 +146,10 @@ class Problem:
                 cols[-1].right = root
                 root.left = cols[-1]
                 root.right = cols[0]
-            row_nodes = []
+            row_nodes: list[Node] = []
             for j, elem in enumerate(row):
                 if i == 0:
-                    col = Column(name=str(next(ncols)), col_idx=j)
+                    col = Column(name=next(ncols), col_idx=j)
                     if cols:
                         col.left = cols[-1]
                         cols[-1].right = col

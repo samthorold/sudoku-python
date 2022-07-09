@@ -75,7 +75,7 @@ def uncover(col: Column):
     logger.debug(f"{col.left.right=}, {col.right.left=}")
 
 
-def search(pr: Problem, depth: int = 0, soln: list[Node] | None = None):
+def search(pr: Problem, depth: int = 0, soln: list[int] | None = None):
     """Recursive algorithm for exact cover problem."""
 
     logger.warning(f"Entered search {depth=} {soln=} {', '.join(str(c) for c in pr.active_cols)}")

@@ -1,7 +1,8 @@
 import pytest
 
 from sudoku.solve.dlx.models import Problem
-from sudoku.solve.dlx.solve import PROBLEM
+from sudoku.solve.dlx.models import Problem
+from sudoku.solve.dlx.solve import PROBLEM, search
 
 
 def test_build_problem():
@@ -37,3 +38,8 @@ def test_choose_column():
     ])
     got = prob.choose_column()
     assert got.name == "2"
+
+
+def test_solution():
+    got = sorted(search(Problem.from_matrix(PROBLEM)))
+    assert got == [0, 3, 4]
