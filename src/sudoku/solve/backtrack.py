@@ -12,12 +12,11 @@ def candidate_boards(board: Board, addr: str, depth: int = 0) -> Iterator[Board]
 
 
 def solve(
-    string: str, iterations: int = 10000, display: bool = False
+    board: Board, iterations: int = 10000, display: bool = False
 ) -> tuple[Board, int]:
     """Solve a sudoku puzzle."""
 
     trials = 0
-    board = Board.from_string(string)
     candidates = candidate_boards(board, "11")
     for _ in range(iterations):
         if board.is_completed():

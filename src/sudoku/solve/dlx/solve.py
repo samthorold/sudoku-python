@@ -1,5 +1,6 @@
 import logging
 
+from sudoku.board import Board
 from sudoku.solve.dlx.models import Column, Node, Problem
 
 
@@ -106,3 +107,7 @@ def search(pr: Problem, depth: int = 0, soln: list[Node] | None = None):
     uncover(col)
     logger.warning(f"Exit search {depth=} {soln=} {', '.join(str(c) for c in pr.active_cols)}")
     return soln
+
+
+def solve(board: Board, **kwargs) -> tuple[Board, int]:
+    """Solve a sudoku puzzle."""
