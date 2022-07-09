@@ -10,10 +10,7 @@ def test_build_problem():
     assert isinstance(prob, Problem)
 
 
-@pytest.mark.parametrize(
-    "j,exp",
-    ((0, 2), (3, 3), (6, 3))
-)
+@pytest.mark.parametrize("j,exp", ((0, 2), (3, 3), (6, 3)))
 def test_column_size(j, exp):
     prob = Problem.from_matrix(PROBLEM)
     i = -1
@@ -31,11 +28,13 @@ def test_choose_column():
     got = prob.choose_column()
     assert got.name == "0"
 
-    prob = Problem.from_matrix([
-        [1, 1, 0],
-        [1, 0, 0],
-        [0, 1, 1],
-    ])
+    prob = Problem.from_matrix(
+        [
+            [1, 1, 0],
+            [1, 0, 0],
+            [0, 1, 1],
+        ]
+    )
     got = prob.choose_column()
     assert got.name == "2"
 

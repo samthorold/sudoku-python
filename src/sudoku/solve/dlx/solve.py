@@ -78,7 +78,9 @@ def uncover(col: Column):
 def search(pr: Problem, depth: int = 0, soln: list[int] | None = None):
     """Recursive algorithm for exact cover problem."""
 
-    logger.warning(f"Entered search {depth=} {soln=} {', '.join(str(c) for c in pr.active_cols)}")
+    logger.warning(
+        f"Entered search {depth=} {soln=} {', '.join(str(c) for c in pr.active_cols)}"
+    )
 
     soln = [] if soln is None else soln
 
@@ -105,7 +107,9 @@ def search(pr: Problem, depth: int = 0, soln: list[int] | None = None):
             left = left.left
         down = down.down
     uncover(col)
-    logger.warning(f"Exit search {depth=} {soln=} {', '.join(str(c) for c in pr.active_cols)}")
+    logger.warning(
+        f"Exit search {depth=} {soln=} {', '.join(str(c) for c in pr.active_cols)}"
+    )
     return soln
 
 
