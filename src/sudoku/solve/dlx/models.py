@@ -158,6 +158,7 @@ class Problem:
                         col_idx=j,
                         col=cols[j],
                     )
+                    logger.debug(f"Created {node=}")
                     up: Node | Column = node.col
                     while up.down:
                         up = up.down

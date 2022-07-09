@@ -1,6 +1,6 @@
 import logging
 
-from sudoku.solve.dlx.models import Column, Problem
+from sudoku.solve.dlx.models import Column, Node, Problem
 
 
 logger = logging.getLogger(__name__)
@@ -32,7 +32,7 @@ def cover(col: Column):
 
     cover_node = col.down
 
-    while not isinstance(cover_node, Column):  # and cover_node.down:
+    while cover_node != col:
         logger.debug(f"{cover_node=}")
 
         node = cover_node.right
@@ -54,7 +54,7 @@ def uncover(col: Column):
 
     cover_node = col.up
 
-    while not isinstance(cover_node, Column):  # and cover_node.up:
+    while not isinstance(cover_node, Column):
         logger.debug(f"{cover_node=}")
 
         node = cover_node.left
@@ -74,34 +74,35 @@ def uncover(col: Column):
     logger.debug(f"{col.left.right=}, {col.right.left=}")
 
 
-def search(pr: Problem, depth: int = 0):
+def search(pr: Problem, depth: int = 0, soln: list[Node] | None = None):
     """Recursive algorithm for exact cover problem."""
 
-    logger.info(f"{depth=}")
-    logger.info("COLS: "+", ".join(str(c) for c in pr.active_cols))
+    logger.warning(f"Entered search {depth=} {soln=} {', '.join(str(c) for c in pr.active_cols)}")
 
-    # breakpoint()
+    soln = [] if soln is None else soln
 
     if pr.root.right.name == "__root__":
-        return
-
-    if any(not c.size for c in pr.active_cols):
-        return
+        return soln
 
     col = pr.choose_column()
 
     cover(col)
     down = col.down
     while down and down != col:
+        if not soln or depth >= len(soln):
+            soln.append(down.row_idx)
+        else:
+            soln[depth] = down.row_idx
         right = down.right
         while right and right != down:
             cover(right.col)
             right = right.right
-        search(pr, depth + 1)
-        logger.info("COLS: " + ", ".join(str(c) for c in pr.active_cols))
+        search(pr, depth + 1, soln)
         left = down.left
         while left and left != down:
             uncover(left.col)
             left = left.left
         down = down.down
     uncover(col)
+    logger.warning(f"Exit search {depth=} {soln=} {', '.join(str(c) for c in pr.active_cols)}")
+    return soln
