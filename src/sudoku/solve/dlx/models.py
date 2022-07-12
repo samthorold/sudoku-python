@@ -134,6 +134,11 @@ class Problem:
 
         return Problem(root)
 
+    @staticmethod
+    def from_board(board: Board) -> Problem:
+        matrix, column_names = remove_empty_cols(*to_matrix(board))
+        return Problem.from_matrix(matrix, iter(column_names))
+
     @property
     def active_cols(self) -> list[Column]:
         cols = []
@@ -168,3 +173,78 @@ class Problem:
             j += 1
             col = col.right
         return self.select_col(min_j)
+
+
+def cell_to_idx() -> dict[str, int]:
+    mapper = {}
+    i = 0
+    for v in range(1, 10):
+        for r in range(1, 10):
+            for c in range(1, 10):
+                mapper[f"{v}{r}{c}"] = i
+                i += 1
+        for r in range(1, 10):
+            mapper[f"{v}r{r}"] = i
+            i += 1
+        for c in range(1, 10):
+            mapper[f"{v}c{c}"] = i
+            i += 1
+        for b in range(1, 10):
+            mapper[f"{v}b{b}"] = i
+            i += 1
+    return mapper
+
+
+def cell_to_row(
+    cell: Cell, cell_to_idx_mapper: dict[str, int], row_length: int
+) -> list[int]:
+    row = [0] * row_length
+    val_idx = cell_to_idx_mapper[f"{cell.val}{cell.row}{cell.col}"]
+    row_idx = cell_to_idx_mapper[f"{cell.val}r{cell.row}"]
+    col_idx = cell_to_idx_mapper[f"{cell.val}c{cell.col}"]
+    box_idx = cell_to_idx_mapper[f"{cell.val}b{cell.box}"]
+    row[val_idx] = 1
+    row[row_idx] = 1
+    row[col_idx] = 1
+    row[box_idx] = 1
+    return tuple(row)
+
+
+def to_matrix(board: Board) -> tuple[Iterable[Iterable[int]], tuple[str]]:
+    cell_to_idx_mapper = cell_to_idx()
+    row_length = len(cell_to_idx_mapper)
+    rows = []
+    for addr, cell in board.items():
+        if cell.is_set():
+            rows.append(cell_to_row(cell, cell_to_idx_mapper, row_length))
+        else:
+            for val in board.candidates(addr):
+                rows.append(
+                    cell_to_row(
+                        board[addr].with_val(val), cell_to_idx_mapper, row_length
+                    )
+                )
+    return tuple(rows), tuple(cell_to_idx_mapper)
+
+
+def empty_cols(matrix: Iterable[Iterable[int]]) -> list[int]:
+    tr = list(map(list, zip(*matrix)))
+    cols = []
+    for j, col in enumerate(tr):
+        if all(i == 0 for i in col):
+            cols.append(j)
+    return cols
+
+
+def remove_empty_cols(
+    matrix: Iterable[Iterable[int]], col_names: tuple[str]
+) -> tuple[Iterable[Iterable[int]], tuple[str]]:
+    to_remove = empty_cols(matrix)
+    tr = list(map(list, zip(*matrix)))
+    tr_new = []
+    col_names_new = []
+    for j, (col, col_name) in enumerate(zip(tr, col_names)):
+        if j not in to_remove:
+            tr_new.append(col)
+            col_names_new.append(col_name)
+    return tuple(map(list, zip(*tr_new))), tuple(col_names_new)

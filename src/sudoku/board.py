@@ -1,3 +1,4 @@
+from __future__ import annotations
 import copy
 from dataclasses import dataclass
 
@@ -17,6 +18,10 @@ BOARDS = [
 ]
 
 
+class CellIsSet(Exception):
+    pass
+
+
 def box(col, row):
     return (col - 1) // 3 + 3 * ((row - 1) // 3) + 1
 
@@ -31,10 +36,23 @@ class Cell:
     def __str__(self):
         return f"{self.col}{self.row}"
 
+    def with_val(self, val: str) -> Cell:
+        if self.val != ".":
+            raise CellIsSet(self)
+        return Cell(
+            col=self.col,
+            row=self.row,
+            box=self.box,
+            val=val,
+        )
+
     def neighbour(self, c: "Cell") -> bool:
         if self.col == c.col and self.row == c.row and self.box == c.box:
             return False
         return (self.col == c.col) or (self.row == c.row) or (self.box == c.box)
+
+    def is_set(self):
+        return len(self.val) == 1 and self.val != "."
 
 
 class InvalidBoard(Exception):
@@ -101,6 +119,9 @@ class Board:
             if row in [3, 6]:
                 s += "---|---|---\n"
         return s
+
+    def items(self):
+        return self.cells.items()
 
     def candidates(self, addr: str) -> str:
         if self[addr].val in self.OPTIONS:
