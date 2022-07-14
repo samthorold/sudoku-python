@@ -1,7 +1,7 @@
 import logging
 
 from sudoku.board import Board
-from sudoku.solve.dlx.models import Column, Node, Problem
+from sudoku.solve.dlx.models import Column, Node, Problem, to_board
 
 
 logger = logging.getLogger(__name__)
@@ -115,3 +115,7 @@ def search(pr: Problem, depth: int = 0, soln: list[int] | None = None):
 
 def solve(board: Board, **kwargs) -> tuple[Board, int]:
     """Solve a sudoku puzzle."""
+
+    pr, m, c = Problem.from_board(board)
+    soln = search(pr)
+    return to_board([x for i, x in enumerate(m) if i in soln], c), soln

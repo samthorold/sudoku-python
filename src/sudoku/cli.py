@@ -1,16 +1,31 @@
+import argparse
+import logging
 import sys
 
 from sudoku.board import Board
-from sudoku.solve import backtrack
+from sudoku.solve import backtrack, dlx
 
 
-SOLVERS = {
-    "backtrack": backtrack,
-}
+SOLVERS = {"backtrack": backtrack, "dlx": dlx}
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("method")
+parser.add_argument("board_string")
+parser.add_argument("--log_level", default="CRITICAL")
+parser.add_argument("--iterations", default=100000, type=int)
+parser.add_argument("--display", action="store_true")
 
 
 if __name__ == "__main__":
-    board_string, method, it, displ = sys.argv[1:]
-    board = Board.from_string(board_string)
-    solved_board, *_ = SOLVERS[method].solve(board, int(it), bool(int(displ)))
+    args = parser.parse_args()
+
+    logging.basicConfig(level=args.log_level)
+
+    board = Board.from_string(args.board_string)
+    solved_board, *addl = SOLVERS[args.method].solve(
+        board=board,
+        iterations=args.iterations,
+        display=args.display,
+    )
     print(solved_board)
