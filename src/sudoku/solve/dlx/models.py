@@ -180,20 +180,6 @@ class Problem:
 def cell_to_idx() -> dict[str, int]:
     mapper = {}
     i = 0
-    # for v in range(1, 10):
-    #     for r in range(1, 10):
-    #         for c in range(1, 10):
-    #             mapper[f"{v}{r}{c}"] = i
-    #             i += 1
-    #     for r in range(1, 10):
-    #         mapper[f"{v}r{r}"] = i
-    #         i += 1
-    #     for c in range(1, 10):
-    #         mapper[f"{v}c{c}"] = i
-    #         i += 1
-    #     for b in range(1, 10):
-    #         mapper[f"{v}b{b}"] = i
-    #         i += 1
     for c in "PRCB":
         for x in range(1, 10):
             for y in range(1, 10):
@@ -206,19 +192,10 @@ def cell_to_row(
     cell: Cell, cell_to_idx_mapper: dict[str, int], row_length: int
 ) -> list[int]:
     row = [0] * row_length
-    # val_idx = cell_to_idx_mapper[f"{cell.val}{cell.row}{cell.col}"]
-    # row_idx = cell_to_idx_mapper[f"{cell.val}r{cell.row}"]
-    # col_idx = cell_to_idx_mapper[f"{cell.val}c{cell.col}"]
-    # box_idx = cell_to_idx_mapper[f"{cell.val}b{cell.box}"]
-    # row[val_idx] = 1
-    # row[row_idx] = 1
-    # row[col_idx] = 1
-    # row[box_idx] = 1
     row[cell_to_idx_mapper[f"P{cell.row}{cell.col}"]] = 1
     row[cell_to_idx_mapper[f"R{cell.val}{cell.row}"]] = 1
     row[cell_to_idx_mapper[f"C{cell.val}{cell.col}"]] = 1
     row[cell_to_idx_mapper[f"B{cell.val}{cell.box}"]] = 1
-
     return tuple(row)
 
 
@@ -275,18 +252,6 @@ def to_board(matrix: Iterable[Iterable[int]], col_names: tuple[str]) -> Board:
                     addr_found = True
                 else:
                     val = name[1]  # {R,C,B}<val><row,col,box idx>
-        # # first 81 cols are the cell addr
-        # for r in range(9):
-        #     for c in range(9):
-        #         if row[r * 9 + c] == 1:
-        #             break
-        # addr = f"{r+1}{c+1}"
-        # # cell value from the index of the next 81 cols
-        # for r in range(9):
-        #     for c in range(9):
-        #         if row[81 + r * 9 + c] == 1:
-        #             break
-        # val = f"{r + 1}"
         logger.info(f"{addr=} {val=}")
         board[addr].val = val
     return board

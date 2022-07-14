@@ -75,12 +75,15 @@ def uncover(col: Column):
     logger.debug(f"{col.left.right=}, {col.right.left=}")
 
 
-def search(pr: Problem, depth: int = 0, soln: list[int] | None = None):
+def search(
+    pr: Problem,
+    depth: int = 0,
+    soln: list[int] | None = None,
+    soln_length: int | None = None,
+):
     """Recursive algorithm for exact cover problem."""
 
-    logger.warning(
-        f"Entered search {depth=} {soln=}"  # {', '.join(str(c) for c in pr.active_cols)}"
-    )
+    logger.warning(f"Entered search {depth=} {soln=}")
 
     soln = [] if soln is None else soln
 
@@ -100,16 +103,16 @@ def search(pr: Problem, depth: int = 0, soln: list[int] | None = None):
         while right and right != down:
             cover(right.col)
             right = right.right
-        search(pr, depth + 1, soln)
+        search(pr=pr, depth=depth + 1, soln=soln, soln_length=soln_length)
+        if soln_length is not None and len(soln) == soln_length:
+            return soln
         left = down.left
         while left and left != down:
             uncover(left.col)
             left = left.left
         down = down.down
     uncover(col)
-    logger.warning(
-        f"Exit search {depth=} {soln=}"  # {', '.join(str(c) for c in pr.active_cols)}"
-    )
+    logger.warning(f"Exit search {depth=} {soln=}")
     return soln
 
 
@@ -117,5 +120,5 @@ def solve(board: Board, **kwargs) -> tuple[Board, int]:
     """Solve a sudoku puzzle."""
 
     pr, m, c = Problem.from_board(board)
-    soln = search(pr)
+    soln = search(pr, soln_length=81)
     return to_board([x for i, x in enumerate(m) if i in soln], c), soln
