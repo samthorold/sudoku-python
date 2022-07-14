@@ -139,9 +139,9 @@ class Board:
         return f"1{row + 1}"
 
     def set_val(self, addr: str, val: str) -> "Board":
-        board = copy.deepcopy(self)
-        board[addr].val = val
-        return board
+        # board = copy.deepcopy(self)
+        self[addr].val = val
+        # return board
 
     def is_completed(self) -> bool:
         return all(c.val in self.OPTIONS for _, c in self.cells.items())

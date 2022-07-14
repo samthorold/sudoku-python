@@ -5,10 +5,11 @@ from sudoku.board import Board
 
 def candidate_boards(board: Board, addr: str, depth: int = 0) -> Iterator[Board]:
     for candidate in board.candidates(addr):
-        cboard = board.set_val(addr, candidate)
-        yield cboard
+        board.set_val(addr, candidate)
+        yield board
         naddr = board.next(addr)
-        yield from candidate_boards(cboard, naddr, depth=depth + 1)
+        yield from candidate_boards(board, naddr, depth=depth + 1)
+        board.set_val(addr, ".")
 
 
 def solve(
