@@ -4,7 +4,7 @@ from sudoku.board import Board
 from sudoku.solve.dlx.models import Column, Node, Problem, to_board
 
 
-# logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 PROBLEM = (
@@ -18,15 +18,17 @@ PROBLEM = (
 PROBLEM_COLUMN_NAMES = "ABCDEFG"
 
 
+def inner_cover(node: Node) -> None:
+    node.up.down = node.down
+    node.down.up = node.up
+    node.col.size -= 1
+
+
 def cover(col: Column):
     """Exclude the Column and associated rows from the search."""
 
-    # logger.info(f"Covering {col}")
-
     col.left.right = col.right
     col.right.left = col.left
-
-    # logger.debug(f"{col.left.right=}, {col.right.left=}")
 
     if col.down == col:
         return
@@ -34,37 +36,33 @@ def cover(col: Column):
     cover_node = col.down
 
     while cover_node != col:
-        # logger.debug(f"{cover_node=}")
 
         node = cover_node.right
 
         while node != cover_node:
-            # logger.info(f"Removing {node}")
-            node.up.down = node.down
-            node.down.up = node.up
-            # logger.debug(f"{node.up.down=}, {node.down.up=}")
+            inner_cover(node)
             node = node.right
 
         cover_node = cover_node.down
 
 
+def inner_uncover(node: Node) -> None:
+    node.up.down = node
+    node.down.up = node
+    node.col.size += 1
+
+
 def uncover(col: Column):
     """Include the Column and associated rows in the search."""
-
-    # logger.info(f"Uncovering {col}")
 
     cover_node = col.up
 
     while not isinstance(cover_node, Column):
-        # logger.debug(f"{cover_node=}")
 
         node = cover_node.left
 
         while node != cover_node:
-            # logger.info(f"Adding {node}")
-            node.up.down = node
-            node.down.up = node
-            # logger.debug(f"{node.up.down=}, {node.down.up=}")
+            inner_uncover(node)
             node = node.left
 
         cover_node = cover_node.up
@@ -72,25 +70,22 @@ def uncover(col: Column):
     col.left.right = col
     col.right.left = col
 
-    # logger.debug(f"{col.left.right=}, {col.right.left=}")
-
 
 def search(
     pr: Problem,
     depth: int = 0,
     soln: list[int] | None = None,
     soln_length: int | None = None,
+    naive: bool = False,
 ):
     """Recursive algorithm for exact cover problem."""
-
-    # logger.warning(f"Entered search {depth=} {soln=}")
 
     soln = [] if soln is None else soln
 
     if pr.root.right.name == "__root__":
         return soln
 
-    col = pr.choose_column()
+    col = pr.choose_column(naive)
 
     cover(col)
     down = col.down
@@ -103,7 +98,7 @@ def search(
         while right and right != down:
             cover(right.col)
             right = right.right
-        search(pr=pr, depth=depth + 1, soln=soln, soln_length=soln_length)
+        search(pr=pr, depth=depth + 1, soln=soln, soln_length=soln_length, naive=naive)
         if soln_length is not None and len(soln) == soln_length:
             return soln
         left = down.left
@@ -112,13 +107,12 @@ def search(
             left = left.left
         down = down.down
     uncover(col)
-    # logger.warning(f"Exit search {depth=} {soln=}")
     return soln
 
 
-def solve(board: Board, **kwargs) -> tuple[Board, int]:
+def solve(board: Board, naive: bool = False, **kwargs) -> tuple[Board, int]:
     """Solve a sudoku puzzle."""
 
     pr, m, c = Problem.from_board(board)
-    soln = search(pr, soln_length=81)
+    soln = search(pr, soln_length=81, naive=naive)
     return to_board([x for i, x in enumerate(m) if i in soln], c), soln

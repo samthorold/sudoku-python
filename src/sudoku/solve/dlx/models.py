@@ -1,5 +1,5 @@
 from __future__ import annotations
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import itertools
 import logging
 from typing import Iterable
@@ -7,7 +7,7 @@ from typing import Iterable
 from sudoku.board import Board
 
 
-# logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -47,15 +47,7 @@ class Column:
     right: Column | None = None
     up: Node | Column | None = None
     down: Node | Column | None = None
-
-    @property
-    def size(self):
-        n = 0
-        down = self.down
-        while down and not isinstance(down, Column):
-            n += 1
-            down = down.down
-        return n
+    size: int = 0
 
     def __repr__(self):
         return f"<Column({self.name})>"
@@ -76,6 +68,7 @@ class Column:
 @dataclass
 class Problem:
     root: Column
+    next_min_col: Column | None = None
 
     @staticmethod
     def from_matrix(
@@ -83,6 +76,7 @@ class Problem:
         column_names: Iterable[str] | None = None,
     ) -> Problem:
         """Build a Problem object from a sequence of rows."""
+
         root = Column("__root__", -1)
 
         cols: list[Column] = []
@@ -105,14 +99,13 @@ class Problem:
                         col.left = cols[-1]
                         cols[-1].right = col
                     cols.append(col)
-                    # logger.debug(f"{col=}")
                 if elem:
                     node = Node(
                         row_idx=i,
                         col_idx=j,
                         col=cols[j],
                     )
-                    # logger.debug(f"Created {node=}")
+                    cols[j].size += 1
                     up: Node | Column = node.col
                     while up.down:
                         up = up.down
@@ -122,7 +115,6 @@ class Problem:
                         node.left = row_nodes[-1]
                         row_nodes[-1].right = node
                     row_nodes.append(node)
-                    # logger.debug(f"{node=}")
             row_nodes[0].left = row_nodes[-1]
             row_nodes[-1].right = row_nodes[0]
 
@@ -162,19 +154,21 @@ class Problem:
             j += 1
             col = col.right
 
-    def choose_column(self) -> Column:
+    def choose_column(self, naive: bool = False) -> Column:
         """Choose the next Column object to cover."""
-        min_size = 1_000_000_000
         col = self.root.right
-        j = min_j = 0
+
+        if naive:
+            return col
+
+        min_size = 1_000_000_000
         while col.name != "__root__":
             s = col.size
             if s < min_size:
+                min_col = col
                 min_size = s
-                min_j = j
-            j += 1
             col = col.right
-        return self.select_col(min_j)
+        return min_col
 
 
 def cell_to_idx() -> dict[str, int]:

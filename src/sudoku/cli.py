@@ -15,6 +15,7 @@ parser.add_argument("board_string")
 parser.add_argument("--log_level", default="CRITICAL")
 parser.add_argument("--iterations", default=100000, type=int)
 parser.add_argument("--display", action="store_true")
+parser.add_argument("--naive", action="store_true")
 
 
 if __name__ == "__main__":
@@ -28,5 +29,6 @@ if __name__ == "__main__":
         board=board,
         iterations=args.iterations,
         display=args.display,
+        naive=args.naive,
     )
     print(solved_board)
