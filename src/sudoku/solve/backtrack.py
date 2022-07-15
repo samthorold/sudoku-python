@@ -5,7 +5,8 @@ from sudoku.board import Board
 
 def candidate_boards(board: Board, addr: str, depth: int = 0) -> Iterator[Board]:
     for candidate in board.candidates(addr):
-        board.set_val(addr, candidate)
+        if board[addr].val == ".":
+            board.set_val(addr, candidate)
         yield board
         naddr = board.next(addr)
         yield from candidate_boards(board, naddr, depth=depth + 1)

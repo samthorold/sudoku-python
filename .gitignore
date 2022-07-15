@@ -10,3 +10,6 @@ venv/
 *.egg-info/
 
 *.swp
+.idea
+
+profile

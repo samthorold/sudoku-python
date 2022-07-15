@@ -78,11 +78,13 @@ class Board:
         if err := valid_board(string):
             raise InvalidBoard(err["msg"])
         for cell, val in zip(board, string):
-            if val in board.OPTIONS:
-                board[cell].val = val
+            if val != ".":  # in board.OPTIONS:
+                # board[cell].val = val
+                board.set_val(cell, val)
         return board
 
     def __init__(self):
+        self.set_count = 0
         self.cells = {
             f"{col}{row}": Cell(
                 str(col),
@@ -124,10 +126,11 @@ class Board:
         return self.cells.items()
 
     def candidates(self, addr: str) -> str:
-        if self[addr].val in self.OPTIONS:
+        if self[addr].val != ".":  # in self.OPTIONS:
             return self[addr].val
         return "".join(
-            sorted(set(self.OPTIONS) - set(c.val for c in self.neighbours[addr]))
+            # sorted(set(self.OPTIONS) - set(c.val for c in self.neighbours[addr]))
+            set(self.OPTIONS) - set(c.val for c in self.neighbours[addr])
         )
 
     def next(self, addr: str) -> str:
@@ -138,10 +141,15 @@ class Board:
             return f"{col + 1}{row}"
         return f"1{row + 1}"
 
-    def set_val(self, addr: str, val: str) -> "Board":
-        # board = copy.deepcopy(self)
+    def set_val(self, addr: str, val: str) -> None:
+        # if val not in ".123456789":
+        #     raise ValueError(f"{addr=} {val=}")
+        if val == ".":
+            self.set_count -= 1
+        else:
+            self.set_count += 1
         self[addr].val = val
-        # return board
 
     def is_completed(self) -> bool:
-        return all(c.val in self.OPTIONS for _, c in self.cells.items())
+        return self.set_count == 81
+        # return not any(c.val == "." for _, c in self.cells.items())

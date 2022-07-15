@@ -23,9 +23,11 @@ if __name__ == "__main__":
     logging.basicConfig(level=args.log_level)
 
     board = Board.from_string(args.board_string)
+    print(board)
     solved_board, *addl = SOLVERS[args.method].solve(
         board=board,
         iterations=args.iterations,
         display=args.display,
     )
     print(solved_board)
+    print(solved_board.set_count)
