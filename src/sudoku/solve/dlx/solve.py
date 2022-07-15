@@ -1,6 +1,6 @@
 import logging
 
-from sudoku.board import Board
+from sudoku.models import Board
 from sudoku.solve.dlx.models import Column, Node, Problem, to_board
 
 

@@ -18,10 +18,6 @@ BOARDS = [
 ]
 
 
-class CellIsSet(Exception):
-    pass
-
-
 def box(col, row):
     return (col - 1) // 3 + 3 * ((row - 1) // 3) + 1
 
@@ -31,28 +27,31 @@ class Cell:
     col: str
     row: str
     box: str
-    val: str = "."
+    val: str | None = None
+    og: bool = False
 
     def __str__(self):
-        return f"{self.col}{self.row}"
+        return f"{self.val or '.'}"
 
     def with_val(self, val: str) -> Cell:
-        if self.val != ".":
-            raise CellIsSet(self)
         return Cell(
             col=self.col,
             row=self.row,
             box=self.box,
             val=val,
+            og=self.og
         )
 
-    def neighbour(self, c: "Cell") -> bool:
+    def neighbour(self, c: Cell) -> bool:
         if self.col == c.col and self.row == c.row and self.box == c.box:
             return False
         return (self.col == c.col) or (self.row == c.row) or (self.box == c.box)
 
     def is_set(self):
-        return len(self.val) == 1 and self.val != "."
+        return self.val is not None
+
+    def can_unset(self):
+        return not self.og
 
 
 class InvalidBoard(Exception):
@@ -73,47 +72,48 @@ class Board:
     OPTIONS = "123456789"
 
     @classmethod
-    def from_string(cls, string: str) -> "Board":
+    def from_string(cls, string: str) -> Board:
         board = cls()
         if err := valid_board(string):
             raise InvalidBoard(err["msg"])
-        for cell, val in zip(board, string):
+        for addr, val in zip(board, string):
             if val != ".":
-                board.set_val(cell, val)
+                board.set(addr, val)
+                board[addr].og = True
         return board
 
     def __init__(self):
-        self.set_count = 0
-        self.cells = {
+        self._set_count = 0
+        self._cells = {
             f"{col}{row}": Cell(
-                str(col),
-                str(row),
-                str(box(col, row)),
+                col=str(col),
+                row=str(row),
+                box=str(box(col, row)),
             )
             for row in range(1, self.SIZE + 1)
             for col in range(1, self.SIZE + 1)
         }
-        self.neighbours = {
+        self._neighbours = {
             f"{col}{row}": [
                 c
-                for _, c in self.cells.items()
-                if c.neighbour(self.cells[f"{col}{row}"])
+                for _, c in self.items()
+                if c.neighbour(self[f"{col}{row}"])
             ]
             for row in range(1, self.SIZE + 1)
             for col in range(1, self.SIZE + 1)
         }
 
     def __iter__(self):
-        return iter(self.cells)
+        return iter(self._cells)
 
-    def __getitem__(self, k):
-        return self.cells[k]
+    def __getitem__(self, k) -> Cell:
+        return self._cells[k]
 
     def __str__(self):
         s = ""
         for row in range(1, self.SIZE + 1):
             for col in range(1, self.SIZE + 1):
-                s += self[f"{col}{row}"].val
+                s += str(self[f"{col}{row}"])
                 if col in [3, 6]:
                     s += "|"
             s += "\n"
@@ -122,14 +122,15 @@ class Board:
         return s
 
     def items(self):
-        return self.cells.items()
+        return self._cells.items()
+
+    def neighbour_vals(self, addr):
+        return set(c.val for c in self._neighbours[addr] if c.is_set())
 
     def candidates(self, addr: str) -> str:
-        if self[addr].val != ".":
+        if self[addr].is_set():
             return self[addr].val
-        return "".join(
-            set(self.OPTIONS) - set(c.val for c in self.neighbours[addr])
-        )
+        return "".join(set(self.OPTIONS) - self.neighbour_vals(addr))
 
     def next(self, addr: str) -> str:
         col, row = [int(x) for x in addr]
@@ -139,12 +140,19 @@ class Board:
             return f"{col + 1}{row}"
         return f"1{row + 1}"
 
-    def set_val(self, addr: str, val: str) -> None:
-        if val == ".":
-            self.set_count -= 1
-        else:
-            self.set_count += 1
-        self[addr].val = val
+    def set(self, addr: str, val: str) -> None:
+        if not val or len(val) > 1:
+            raise ValueError(f"Must provide value of length 1: {val=}")
+        if val not in self.OPTIONS:
+            raise ValueError(f"{val} not in {self.OPTIONS}")
+        if not self[addr].is_set():
+            self._set_count += 1
+            self[addr].val = val
+
+    def unset(self, addr: str) -> None:
+        if self[addr].can_unset():
+            self._set_count -= 1
+            self[addr].val = None
 
     def is_completed(self) -> bool:
-        return self.set_count == 81
+        return self._set_count == 81

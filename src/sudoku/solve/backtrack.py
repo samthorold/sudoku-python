@@ -1,16 +1,15 @@
 from typing import Iterator
 
-from sudoku.board import Board
+from sudoku.models import Board
 
 
 def candidate_boards(board: Board, addr: str, depth: int = 0) -> Iterator[Board]:
     for candidate in board.candidates(addr):
-        if board[addr].val == ".":
-            board.set_val(addr, candidate)
+        board.set(addr, candidate)
         yield board
         naddr = board.next(addr)
         yield from candidate_boards(board, naddr, depth=depth + 1)
-        board.set_val(addr, ".")
+        board.unset(addr)
 
 
 def solve(

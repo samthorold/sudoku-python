@@ -4,7 +4,7 @@ import itertools
 import logging
 from typing import Iterable
 
-from sudoku.board import Board
+from sudoku.models import Board
 
 
 logger = logging.getLogger(__name__)

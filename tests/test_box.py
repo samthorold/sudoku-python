@@ -1,8 +1,9 @@
 import pytest
 
-from sudoku.board import box
+from sudoku.models import box
 
 
+@pytest.mark.very_unit
 @pytest.mark.parametrize(
     "col,row,exp",
     (

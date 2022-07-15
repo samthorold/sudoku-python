@@ -3,7 +3,10 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.pytest.ini_options]
-addopts = "--doctest-modules"
+addopts = "--doctest-modules -m \"not very_unit\""
+markers = [
+    "very_unit"
+]
 
 [tool.coverage.run]
 parallel = true

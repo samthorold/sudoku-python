@@ -2,7 +2,7 @@ import argparse
 import logging
 import sys
 
-from sudoku.board import Board
+from sudoku.models import Board
 from sudoku.solve import backtrack, dlx
 
 
