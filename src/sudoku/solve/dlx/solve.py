@@ -4,7 +4,7 @@ from sudoku.board import Board
 from sudoku.solve.dlx.models import Column, Node, Problem, to_board
 
 
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
 
 
 PROBLEM = (
@@ -21,12 +21,12 @@ PROBLEM_COLUMN_NAMES = "ABCDEFG"
 def cover(col: Column):
     """Exclude the Column and associated rows from the search."""
 
-    logger.info(f"Covering {col}")
+    # logger.info(f"Covering {col}")
 
     col.left.right = col.right
     col.right.left = col.left
 
-    logger.debug(f"{col.left.right=}, {col.right.left=}")
+    # logger.debug(f"{col.left.right=}, {col.right.left=}")
 
     if col.down == col:
         return
@@ -34,15 +34,15 @@ def cover(col: Column):
     cover_node = col.down
 
     while cover_node != col:
-        logger.debug(f"{cover_node=}")
+        # logger.debug(f"{cover_node=}")
 
         node = cover_node.right
 
         while node != cover_node:
-            logger.info(f"Removing {node}")
+            # logger.info(f"Removing {node}")
             node.up.down = node.down
             node.down.up = node.up
-            logger.debug(f"{node.up.down=}, {node.down.up=}")
+            # logger.debug(f"{node.up.down=}, {node.down.up=}")
             node = node.right
 
         cover_node = cover_node.down
@@ -51,20 +51,20 @@ def cover(col: Column):
 def uncover(col: Column):
     """Include the Column and associated rows in the search."""
 
-    logger.info(f"Uncovering {col}")
+    # logger.info(f"Uncovering {col}")
 
     cover_node = col.up
 
     while not isinstance(cover_node, Column):
-        logger.debug(f"{cover_node=}")
+        # logger.debug(f"{cover_node=}")
 
         node = cover_node.left
 
         while node != cover_node:
-            logger.info(f"Adding {node}")
+            # logger.info(f"Adding {node}")
             node.up.down = node
             node.down.up = node
-            logger.debug(f"{node.up.down=}, {node.down.up=}")
+            # logger.debug(f"{node.up.down=}, {node.down.up=}")
             node = node.left
 
         cover_node = cover_node.up
@@ -72,7 +72,7 @@ def uncover(col: Column):
     col.left.right = col
     col.right.left = col
 
-    logger.debug(f"{col.left.right=}, {col.right.left=}")
+    # logger.debug(f"{col.left.right=}, {col.right.left=}")
 
 
 def search(
@@ -83,7 +83,7 @@ def search(
 ):
     """Recursive algorithm for exact cover problem."""
 
-    logger.warning(f"Entered search {depth=} {soln=}")
+    # logger.warning(f"Entered search {depth=} {soln=}")
 
     soln = [] if soln is None else soln
 
@@ -112,7 +112,7 @@ def search(
             left = left.left
         down = down.down
     uncover(col)
-    logger.warning(f"Exit search {depth=} {soln=}")
+    # logger.warning(f"Exit search {depth=} {soln=}")
     return soln
 
 

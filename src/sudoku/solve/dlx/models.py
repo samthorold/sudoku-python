@@ -7,7 +7,7 @@ from typing import Iterable
 from sudoku.board import Board
 
 
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -105,14 +105,14 @@ class Problem:
                         col.left = cols[-1]
                         cols[-1].right = col
                     cols.append(col)
-                    logger.debug(f"{col=}")
+                    # logger.debug(f"{col=}")
                 if elem:
                     node = Node(
                         row_idx=i,
                         col_idx=j,
                         col=cols[j],
                     )
-                    logger.debug(f"Created {node=}")
+                    # logger.debug(f"Created {node=}")
                     up: Node | Column = node.col
                     while up.down:
                         up = up.down
@@ -122,7 +122,7 @@ class Problem:
                         node.left = row_nodes[-1]
                         row_nodes[-1].right = node
                     row_nodes.append(node)
-                    logger.debug(f"{node=}")
+                    # logger.debug(f"{node=}")
             row_nodes[0].left = row_nodes[-1]
             row_nodes[-1].right = row_nodes[0]
 
@@ -252,6 +252,6 @@ def to_board(matrix: Iterable[Iterable[int]], col_names: tuple[str]) -> Board:
                     addr_found = True
                 else:
                     val = name[1]  # {R,C,B}<val><row,col,box idx>
-        logger.info(f"{addr=} {val=}")
+        # logger.info(f"{addr=} {val=}")
         board[addr].val = val
     return board

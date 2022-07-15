@@ -30,4 +30,3 @@ if __name__ == "__main__":
         display=args.display,
     )
     print(solved_board)
-    print(solved_board.set_count)

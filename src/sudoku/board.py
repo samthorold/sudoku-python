@@ -78,8 +78,7 @@ class Board:
         if err := valid_board(string):
             raise InvalidBoard(err["msg"])
         for cell, val in zip(board, string):
-            if val != ".":  # in board.OPTIONS:
-                # board[cell].val = val
+            if val != ".":
                 board.set_val(cell, val)
         return board
 
@@ -126,10 +125,9 @@ class Board:
         return self.cells.items()
 
     def candidates(self, addr: str) -> str:
-        if self[addr].val != ".":  # in self.OPTIONS:
+        if self[addr].val != ".":
             return self[addr].val
         return "".join(
-            # sorted(set(self.OPTIONS) - set(c.val for c in self.neighbours[addr]))
             set(self.OPTIONS) - set(c.val for c in self.neighbours[addr])
         )
 
@@ -142,8 +140,6 @@ class Board:
         return f"1{row + 1}"
 
     def set_val(self, addr: str, val: str) -> None:
-        # if val not in ".123456789":
-        #     raise ValueError(f"{addr=} {val=}")
         if val == ".":
             self.set_count -= 1
         else:
@@ -152,4 +148,3 @@ class Board:
 
     def is_completed(self) -> bool:
         return self.set_count == 81
-        # return not any(c.val == "." for _, c in self.cells.items())
