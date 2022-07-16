@@ -115,4 +115,4 @@ def solve(board: Board, naive: bool = False, **kwargs) -> tuple[Board, int]:
 
     pr, m, c = Problem.from_board(board)
     soln = search(pr, soln_length=81, naive=naive)
-    return to_board([x for i, x in enumerate(m) if i in soln], c), soln
+    return to_board([x for i, x in enumerate(m) if i in soln], c), 0

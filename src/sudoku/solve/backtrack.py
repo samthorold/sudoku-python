@@ -13,19 +13,11 @@ def candidate_boards(board: Board, addr: str, depth: int = 0) -> Iterator[Board]
 
 
 def solve(
-    board: Board, iterations: int = 10000, display: bool = False, **kwargs
+    board: Board, iterations: int = 10000, **kwargs
 ) -> tuple[Board, int]:
     """Solve a sudoku puzzle."""
 
-    trials = 0
-    candidates = candidate_boards(board, "11")
-    for _ in range(iterations):
-        if board.is_completed():
+    for t, b in enumerate(candidate_boards(board, "11"), 1):
+        if t >= iterations or b.is_completed():
             break
-        board = next(candidates)
-        trials += 1
-        if display:
-            print(trials)
-            print(board)
-
-    return board, trials
+    return b, t
