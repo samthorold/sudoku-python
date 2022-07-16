@@ -210,24 +210,14 @@ def to_matrix(board: Board) -> tuple[Iterable[Iterable[int]], tuple[str]]:
     return tuple(rows), tuple(cell_to_idx_mapper)
 
 
-def empty_cols(matrix: Iterable[Iterable[int]]) -> list[int]:
-    tr = list(map(list, zip(*matrix)))
-    cols = []
-    for j, col in enumerate(tr):
-        if all(i == 0 for i in col):
-            cols.append(j)
-    return cols
-
-
 def remove_empty_cols(
     matrix: Iterable[Iterable[int]], col_names: tuple[str]
 ) -> tuple[Iterable[Iterable[int]], tuple[str]]:
-    to_remove = empty_cols(matrix)
     tr = list(map(list, zip(*matrix)))
     tr_new = []
     col_names_new = []
-    for j, (col, col_name) in enumerate(zip(tr, col_names)):
-        if j not in to_remove:
+    for col, col_name in zip(tr, col_names):
+        if any(col):
             tr_new.append(col)
             col_names_new.append(col_name)
     return tuple(map(list, zip(*tr_new))), tuple(col_names_new)
