@@ -1,7 +1,7 @@
 import logging
 
 from sudoku.models import Board
-from sudoku.solve.dlx.models import Column, Node, Problem, to_board
+from sudoku.solve.dlx.models import Column, Node, Problem, populate_board
 
 
 logger = logging.getLogger(__name__)
@@ -115,4 +115,5 @@ def solve(board: Board, naive: bool = False, **kwargs) -> tuple[Board, int]:
 
     pr, m, c = Problem.from_board(board)
     soln = search(pr, soln_length=81, naive=naive)
-    return to_board([x for i, x in enumerate(m) if i in soln], c), 0
+    soln_matrix = [x for i, x in enumerate(m) if i in soln]
+    return populate_board(board=board, matrix=soln_matrix, col_names=c), 0

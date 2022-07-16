@@ -223,9 +223,7 @@ def remove_empty_cols(
     return tuple(map(list, zip(*tr_new))), tuple(col_names_new)
 
 
-def to_board(matrix: Iterable[Iterable[int]], col_names: tuple[str]) -> Board:
-
-    board = Board()
+def populate_board(board: Board, matrix: Iterable[Iterable[int]], col_names: tuple[str]) -> Board:
 
     for row in matrix:
         addr_found = False
@@ -237,5 +235,5 @@ def to_board(matrix: Iterable[Iterable[int]], col_names: tuple[str]) -> Board:
                     addr_found = True
                 else:
                     val = name[1]  # {R,C,B}<val><row,col,box idx>
-        board[addr].val = val
+        board.set(addr, val)
     return board
