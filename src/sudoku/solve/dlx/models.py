@@ -203,9 +203,7 @@ def to_matrix(board: Board) -> tuple[Iterable[Iterable[int]], tuple[str]]:
         else:
             for val in board.candidates(addr):
                 rows.append(
-                    cell_to_row(
-                        board[addr].with_val(val), cell_to_idx_mapper, row_len
-                    )
+                    cell_to_row(board[addr].with_val(val), cell_to_idx_mapper, row_len)
                 )
     return tuple(rows), tuple(cell_to_idx_mapper)
 
@@ -223,7 +221,9 @@ def remove_empty_cols(
     return tuple(map(list, zip(*tr_new))), tuple(col_names_new)
 
 
-def populate_board(board: Board, matrix: Iterable[Iterable[int]], col_names: tuple[str]) -> Board:
+def populate_board(
+    board: Board, matrix: Iterable[Iterable[int]], col_names: tuple[str]
+) -> Board:
 
     for row in matrix:
         addr_found = False
