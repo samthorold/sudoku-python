@@ -31,7 +31,7 @@ def test_neighbours(board_string):
     (
         ("11", "5"),
         ("31", "124"),
-    )
+    ),
 )
 def test_candidates(board_string, addr, exp):
     candidates = Board.from_string(board_string).candidates(addr)
@@ -39,7 +39,7 @@ def test_candidates(board_string, addr, exp):
 
 
 def test_is_completed():
-    string = "1"*81
+    string = "1" * 81
     board = Board.from_string(string)
     assert board.is_completed()
 

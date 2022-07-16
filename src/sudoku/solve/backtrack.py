@@ -12,9 +12,7 @@ def candidate_boards(board: Board, addr: str, depth: int = 0) -> Iterator[Board]
         board.unset(addr)
 
 
-def solve(
-    board: Board, iterations: int = 10000, **kwargs
-) -> tuple[Board, int]:
+def solve(board: Board, iterations: int = 10000, **kwargs) -> tuple[Board, int]:
     """Solve a sudoku puzzle."""
 
     for t, b in enumerate(candidate_boards(board, "11"), 1):

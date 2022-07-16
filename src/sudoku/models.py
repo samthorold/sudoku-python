@@ -34,13 +34,7 @@ class Cell:
         return f"{self.val or '.'}"
 
     def with_val(self, val: str) -> Cell:
-        return Cell(
-            col=self.col,
-            row=self.row,
-            box=self.box,
-            val=val,
-            og=self.og
-        )
+        return Cell(col=self.col, row=self.row, box=self.box, val=val, og=self.og)
 
     def neighbour(self, c: Cell) -> bool:
         if self.col == c.col and self.row == c.row and self.box == c.box:
@@ -95,9 +89,7 @@ class Board:
         }
         self._neighbours = {
             f"{col}{row}": [
-                c
-                for _, c in self.items()
-                if c.neighbour(self[f"{col}{row}"])
+                c for _, c in self.items() if c.neighbour(self[f"{col}{row}"])
             ]
             for row in range(1, self.SIZE + 1)
             for col in range(1, self.SIZE + 1)
