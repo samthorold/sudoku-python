@@ -183,9 +183,9 @@ def cell_to_idx() -> dict[str, int]:
 
 
 def cell_to_row(
-    cell: Cell, cell_to_idx_mapper: dict[str, int], row_length: int
+    cell: Cell, cell_to_idx_mapper: dict[str, int], row_len: int
 ) -> list[int]:
-    row = [0] * row_length
+    row = [0] * row_len
     row[cell_to_idx_mapper[f"P{cell.row}{cell.col}"]] = 1
     row[cell_to_idx_mapper[f"R{cell.val}{cell.row}"]] = 1
     row[cell_to_idx_mapper[f"C{cell.val}{cell.col}"]] = 1
@@ -195,16 +195,16 @@ def cell_to_row(
 
 def to_matrix(board: Board) -> tuple[Iterable[Iterable[int]], tuple[str]]:
     cell_to_idx_mapper = cell_to_idx()
-    row_length = len(cell_to_idx_mapper)
+    row_len = len(cell_to_idx_mapper)
     rows = []
     for addr, cell in board.items():
         if cell.is_set():
-            rows.append(cell_to_row(cell, cell_to_idx_mapper, row_length))
+            rows.append(cell_to_row(cell, cell_to_idx_mapper, row_len))
         else:
             for val in board.candidates(addr):
                 rows.append(
                     cell_to_row(
-                        board[addr].with_val(val), cell_to_idx_mapper, row_length
+                        board[addr].with_val(val), cell_to_idx_mapper, row_len
                     )
                 )
     return tuple(rows), tuple(cell_to_idx_mapper)
@@ -242,10 +242,10 @@ def to_board(matrix: Iterable[Iterable[int]], col_names: tuple[str]) -> Board:
         for col, name in zip(row, col_names):
             if col:
                 if not addr_found:
-                    addr = name[1:]  # Remove P
+                    r, c = name[1:]  # Remove P
+                    addr = f"{c}{r}"  # board addresses are col, row
                     addr_found = True
                 else:
                     val = name[1]  # {R,C,B}<val><row,col,box idx>
-        # logger.info(f"{addr=} {val=}")
         board[addr].val = val
     return board
