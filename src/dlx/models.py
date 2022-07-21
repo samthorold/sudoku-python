@@ -14,22 +14,6 @@ class Node:
     up: Node | Column | None = None
     down: Node | Column | None = None
 
-    def __repr__(self):
-        left = f"({self.left.row_idx}, {self.left.col_idx})" if self.left else None
-        right = f"({self.right.row_idx}, {self.right.col_idx})" if self.right else None
-        if isinstance(self.up, Column):
-            up = self.up
-        else:
-            up = f"({self.up.row_idx}, {self.up.col_idx})" if self.up else None
-        if isinstance(self.down, Column):
-            down = self.down
-        else:
-            down = f"({self.down.row_idx}, {self.down.col_idx})" if self.down else None
-        return (
-            f"<Node({self.row_idx}, {self.col_idx}, "
-            f"left={left}, right={right}, up={up}, down={down})>"
-        )
-
 
 @dataclass
 class Column:
