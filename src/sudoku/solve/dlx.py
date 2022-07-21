@@ -6,7 +6,7 @@ from sudoku.models import Board, Cell
 
 def from_board(
     board: Board,
-) -> tuple[Problem, Sequence[Sequence[int]], tuple[str]]:
+) -> tuple[Problem, Sequence[Sequence[int]], tuple[str, ...]]:
     matrix, column_names = remove_empty_cols(*to_matrix(board))
     return (
         from_matrix(matrix=matrix, column_names=column_names),
@@ -28,7 +28,7 @@ def cell_to_idx() -> dict[str, int]:
 
 def cell_to_row(
     cell: Cell, cell_to_idx_mapper: dict[str, int], row_len: int
-) -> tuple[int]:
+) -> tuple[int, ...]:
     row = [0] * row_len
     row[cell_to_idx_mapper[f"P{cell.row}{cell.col}"]] = 1
     row[cell_to_idx_mapper[f"R{cell.val}{cell.row}"]] = 1
@@ -37,7 +37,7 @@ def cell_to_row(
     return tuple(row)
 
 
-def to_matrix(board: Board) -> tuple[Sequence[Sequence[int]], tuple[str]]:
+def to_matrix(board: Board) -> tuple[Sequence[Sequence[int]], tuple[str, ...]]:
     cell_to_idx_mapper = cell_to_idx()
     row_len = len(cell_to_idx_mapper)
     rows = []
@@ -45,7 +45,9 @@ def to_matrix(board: Board) -> tuple[Sequence[Sequence[int]], tuple[str]]:
         if cell.is_set():
             rows.append(cell_to_row(cell, cell_to_idx_mapper, row_len))
         else:
-            for val in board.candidates(addr):
+            candidates = board.candidates(addr)
+            assert candidates
+            for val in candidates:
                 rows.append(
                     cell_to_row(board[addr].with_val(val), cell_to_idx_mapper, row_len)
                 )
@@ -53,8 +55,8 @@ def to_matrix(board: Board) -> tuple[Sequence[Sequence[int]], tuple[str]]:
 
 
 def remove_empty_cols(
-    matrix: Sequence[Sequence[int]], col_names: tuple[str]
-) -> tuple[Sequence[Sequence[int]], tuple[str]]:
+    matrix: Sequence[Sequence[int]], col_names: tuple[str, ...]
+) -> tuple[Sequence[Sequence[int]], tuple[str, ...]]:
     tr = list(map(list, zip(*matrix)))
     tr_new = []
     col_names_new = []
@@ -66,7 +68,7 @@ def remove_empty_cols(
 
 
 def populate_board(
-    board: Board, matrix: Sequence[Sequence[int]], col_names: tuple[str]
+    board: Board, matrix: Sequence[Sequence[int]], col_names: tuple[str, ...]
 ) -> Board:
 
     for row in matrix:
@@ -74,7 +76,7 @@ def populate_board(
         for col, name in zip(row, col_names):
             if col:
                 if not addr_found:
-                    r, c = name[1:]  # Remove P
+                    r, c = list(name[1:])  # Remove P
                     addr = f"{c}{r}"  # board addresses are col, row
                     addr_found = True
                 else:

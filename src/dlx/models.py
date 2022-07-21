@@ -82,7 +82,7 @@ class Problem:
 
 def from_matrix(
     matrix: Sequence[Sequence[int]],
-    column_names: Sequence[str] | None = None,
+    column_names: tuple[str, ...] | None = None,
 ) -> Problem:
     """Build a Problem object from a sequence of rows."""
 

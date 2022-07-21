@@ -19,7 +19,7 @@ BOARDS = [
 
 
 class Solver(Protocol):
-    def solve(self, board: Board, *args, **kwargs) -> Board:
+    def solve(self, board: Board, **kwargs) -> Board:
         ...
 
 
@@ -126,7 +126,7 @@ class Board:
     def neighbour_vals(self, addr):
         return set(c.val for c in self._neighbours[addr] if c.is_set())
 
-    def candidates(self, addr: str) -> str:
+    def candidates(self, addr: str) -> str | None:
         if self[addr].is_set():
             return self[addr].val
         return "".join(set(self.OPTIONS) - self.neighbour_vals(addr))
