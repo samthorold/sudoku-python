@@ -1,10 +1,10 @@
 from __future__ import annotations
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 import itertools
 import logging
-from typing import Iterable
+from typing import Sequence
 
-from sudoku.models import Board
+from sudoku.models import Board, Cell
 
 
 logger = logging.getLogger(__name__)
@@ -52,18 +52,6 @@ class Column:
     def __repr__(self):
         return f"<Column({self.name})>"
 
-    def __str__(self):
-        s = f"{self.name}["
-        node = self.down
-
-        while node and node != self:
-            s += f"{node.row_idx},"
-            node = node.down
-
-        s = s[:-1] + "]"
-
-        return s
-
 
 @dataclass
 class Problem:
@@ -72,8 +60,8 @@ class Problem:
 
     @staticmethod
     def from_matrix(
-        matrix: Iterable[Iterable[int]],
-        column_names: Iterable[str] | None = None,
+        matrix: Sequence[Sequence[int]],
+        column_names: Sequence[str] | None = None,
     ) -> Problem:
         """Build a Problem object from a sequence of rows."""
 
@@ -81,7 +69,7 @@ class Problem:
 
         cols: list[Column] = []
         if column_names is None:
-            ncols = (str(i) for i in itertools.count(0))
+            ncols = tuple(str(i) for i in range(len(matrix[0])))
         else:
             ncols = column_names
 
@@ -94,7 +82,7 @@ class Problem:
             row_nodes: list[Node] = []
             for j, elem in enumerate(row):
                 if i == 0:
-                    col = Column(name=next(ncols), col_idx=j)
+                    col = Column(name=ncols[j], col_idx=j)
                     if cols:
                         col.left = cols[-1]
                         cols[-1].right = col
@@ -131,9 +119,13 @@ class Problem:
     @staticmethod
     def from_board(
         board: Board,
-    ) -> tuple[Problem, Iterable[Iterable[int]], tuple[str]]:
+    ) -> tuple[Problem, Sequence[Sequence[int]], tuple[str]]:
         matrix, column_names = remove_empty_cols(*to_matrix(board))
-        return Problem.from_matrix(matrix, iter(column_names)), matrix, column_names
+        return (
+            Problem.from_matrix(matrix=matrix, column_names=column_names),
+            matrix,
+            column_names,
+        )
 
     @property
     def active_cols(self) -> list[Column]:
@@ -186,7 +178,7 @@ def cell_to_idx() -> dict[str, int]:
 
 def cell_to_row(
     cell: Cell, cell_to_idx_mapper: dict[str, int], row_len: int
-) -> list[int]:
+) -> tuple[int]:
     row = [0] * row_len
     row[cell_to_idx_mapper[f"P{cell.row}{cell.col}"]] = 1
     row[cell_to_idx_mapper[f"R{cell.val}{cell.row}"]] = 1
@@ -195,7 +187,7 @@ def cell_to_row(
     return tuple(row)
 
 
-def to_matrix(board: Board) -> tuple[Iterable[Iterable[int]], tuple[str]]:
+def to_matrix(board: Board) -> tuple[Sequence[Sequence[int]], tuple[str]]:
     cell_to_idx_mapper = cell_to_idx()
     row_len = len(cell_to_idx_mapper)
     rows = []
@@ -211,8 +203,8 @@ def to_matrix(board: Board) -> tuple[Iterable[Iterable[int]], tuple[str]]:
 
 
 def remove_empty_cols(
-    matrix: Iterable[Iterable[int]], col_names: tuple[str]
-) -> tuple[Iterable[Iterable[int]], tuple[str]]:
+    matrix: Sequence[Sequence[int]], col_names: tuple[str]
+) -> tuple[Sequence[Sequence[int]], tuple[str]]:
     tr = list(map(list, zip(*matrix)))
     tr_new = []
     col_names_new = []
@@ -224,7 +216,7 @@ def remove_empty_cols(
 
 
 def populate_board(
-    board: Board, matrix: Iterable[Iterable[int]], col_names: tuple[str]
+    board: Board, matrix: Sequence[Sequence[int]], col_names: tuple[str]
 ) -> Board:
 
     for row in matrix:
