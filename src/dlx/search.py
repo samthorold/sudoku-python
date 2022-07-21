@@ -1,5 +1,5 @@
 from dlx.cover import cover
-from dlx.models import Problem
+from dlx.models import Node, Problem
 from dlx.uncover import uncover
 
 
@@ -13,6 +13,8 @@ def search(
 
     soln = [] if soln is None else soln
 
+    assert pr.root.right
+
     if pr.root.right.name == "__root__":
         return soln
 
@@ -20,7 +22,7 @@ def search(
 
     cover(col)
     down = col.down
-    while down and down != col:
+    while down and down != col and isinstance(down, Node):
         if not soln or depth >= len(soln):
             soln.append(down.row_idx)
         else:
