@@ -34,7 +34,7 @@ def choose_column(root: Column) -> Column:
     min_col = root
 
     min_size = 1_000_000_000
-    while col and col.name != "__root__":
+    while col and col != root:
         s = col.size
         if s < min_size:
             min_col = col
