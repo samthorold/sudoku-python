@@ -1,12 +1,12 @@
 from typing import Sequence
-from dlx.models import Problem, from_matrix
+from dlx.models import Column, from_matrix
 from dlx.search import search
 from sudoku.models import Board, Cell
 
 
 def from_board(
     board: Board,
-) -> tuple[Problem, Sequence[Sequence[int]], tuple[str, ...]]:
+) -> tuple[Column, Sequence[Sequence[int]], tuple[str, ...]]:
     matrix, column_names = remove_empty_cols(*to_matrix(board))
     return (
         from_matrix(matrix=matrix, column_names=column_names),
@@ -89,7 +89,7 @@ class Dlx:
     def solve(self, board: Board, **kwargs) -> Board:
         """Solve a sudoku puzzle."""
 
-        pr, m, c = from_board(board)
-        soln = search(pr, soln_length=81)
+        col, m, c = from_board(board)
+        soln = search(col, soln_length=81)
         soln_matrix = [x for i, x in enumerate(m) if i in soln]
         return populate_board(board=board, matrix=soln_matrix, col_names=c)

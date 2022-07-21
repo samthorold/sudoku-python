@@ -1,12 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
-import logging
 from typing import Sequence
-
-from sudoku.models import Board, Cell
-
-
-logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -52,29 +46,25 @@ class Column:
         return f"<Column({self.name})>"
 
 
-@dataclass
-class Problem:
-    root: Column
+def choose_column(root: Column) -> Column:
+    """Choose the next Column object to cover."""
+    col = root.right
+    min_col = root
 
-    def choose_column(self) -> Column:
-        """Choose the next Column object to cover."""
-        col = self.root.right
-        min_col = self.root
-
-        min_size = 1_000_000_000
-        while col and col.name != "__root__":
-            s = col.size
-            if s < min_size:
-                min_col = col
-                min_size = s
-            col = col.right
-        return min_col
+    min_size = 1_000_000_000
+    while col and col.name != "__root__":
+        s = col.size
+        if s < min_size:
+            min_col = col
+            min_size = s
+        col = col.right
+    return min_col
 
 
 def from_matrix(
     matrix: Sequence[Sequence[int]],
     column_names: tuple[str, ...] | None = None,
-) -> Problem:
+) -> Column:
     """Build a Problem object from a sequence of rows."""
 
     root = Column("__root__", -1)
@@ -127,4 +117,4 @@ def from_matrix(
             bottom.down = col
         col.up = bottom
 
-    return Problem(root)
+    return root

@@ -1,10 +1,10 @@
 from dlx.cover import cover
-from dlx.models import Node, Problem
+from dlx.models import Column, Node, choose_column
 from dlx.uncover import uncover
 
 
 def search(
-    pr: Problem,
+    root: Column,
     depth: int = 0,
     soln: list[int] | None = None,
     soln_length: int | None = None,
@@ -13,12 +13,12 @@ def search(
 
     soln = [] if soln is None else soln
 
-    assert pr.root.right
+    assert root.right
 
-    if pr.root.right.name == "__root__":
+    if root.right.name == "__root__":
         return soln
 
-    col = pr.choose_column()
+    col = choose_column(root)
 
     cover(col)
     down = col.down
@@ -31,7 +31,7 @@ def search(
         while right and right != down:
             cover(right.col)
             right = right.right
-        search(pr=pr, depth=depth + 1, soln=soln, soln_length=soln_length)
+        search(root=root, depth=depth + 1, soln=soln, soln_length=soln_length)
         if soln_length is not None and len(soln) == soln_length:
             return soln
         left = down.left
