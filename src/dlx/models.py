@@ -55,16 +55,11 @@ class Column:
 @dataclass
 class Problem:
     root: Column
-    next_min_col: Column | None = None
-
-    @staticmethod
-    def __repr__(self):
-        return "<Problem()>"
 
     def select_col(self, col_idx):
         j = 0
         col = self.root.right
-        while col.name != "__root__":
+        while col and col.name != "__root__":
             if j == col_idx:
                 return col
             j += 1
@@ -73,9 +68,10 @@ class Problem:
     def choose_column(self) -> Column:
         """Choose the next Column object to cover."""
         col = self.root.right
+        min_col = self.root
 
         min_size = 1_000_000_000
-        while col.name != "__root__":
+        while col and col.name != "__root__":
             s = col.size
             if s < min_size:
                 min_col = col
@@ -134,9 +130,10 @@ def from_matrix(
     # point all the bottom nodes back to the top nodes and vice versa
     for col in cols:
         bottom = col.down
-        while bottom.down:
+        while bottom and bottom.down:
             bottom = bottom.down
-        bottom.down = col
+        if bottom:
+            bottom.down = col
         col.up = bottom
 
     return Problem(root)
