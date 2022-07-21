@@ -58,63 +58,6 @@ class Problem:
     next_min_col: Column | None = None
 
     @staticmethod
-    def from_matrix(
-        matrix: Sequence[Sequence[int]],
-        column_names: Sequence[str] | None = None,
-    ) -> Problem:
-        """Build a Problem object from a sequence of rows."""
-
-        root = Column("__root__", -1)
-
-        cols: list[Column] = []
-        if column_names is None:
-            ncols = tuple(str(i) for i in range(len(matrix[0])))
-        else:
-            ncols = column_names
-
-        for i, row in enumerate(matrix):
-            if i == 1:
-                cols[0].left = root
-                cols[-1].right = root
-                root.left = cols[-1]
-                root.right = cols[0]
-            row_nodes: list[Node] = []
-            for j, elem in enumerate(row):
-                if i == 0:
-                    col = Column(name=ncols[j], col_idx=j)
-                    if cols:
-                        col.left = cols[-1]
-                        cols[-1].right = col
-                    cols.append(col)
-                if elem:
-                    node = Node(
-                        row_idx=i,
-                        col_idx=j,
-                        col=cols[j],
-                    )
-                    cols[j].size += 1
-                    up: Node | Column = node.col
-                    while up.down:
-                        up = up.down
-                    node.up = up
-                    up.down = node
-                    if row_nodes:
-                        node.left = row_nodes[-1]
-                        row_nodes[-1].right = node
-                    row_nodes.append(node)
-            row_nodes[0].left = row_nodes[-1]
-            row_nodes[-1].right = row_nodes[0]
-
-        # point all the bottom nodes back to the top nodes and vice versa
-        for col in cols:
-            bottom = col.down
-            while bottom.down:
-                bottom = bottom.down
-            bottom.down = col
-            col.up = bottom
-
-        return Problem(root)
-
     def __repr__(self):
         return "<Problem()>"
 
@@ -139,3 +82,61 @@ class Problem:
                 min_size = s
             col = col.right
         return min_col
+
+
+def from_matrix(
+    matrix: Sequence[Sequence[int]],
+    column_names: Sequence[str] | None = None,
+) -> Problem:
+    """Build a Problem object from a sequence of rows."""
+
+    root = Column("__root__", -1)
+
+    cols: list[Column] = []
+    if column_names is None:
+        ncols = tuple(str(i) for i in range(len(matrix[0])))
+    else:
+        ncols = column_names
+
+    for i, row in enumerate(matrix):
+        if i == 1:
+            cols[0].left = root
+            cols[-1].right = root
+            root.left = cols[-1]
+            root.right = cols[0]
+        row_nodes: list[Node] = []
+        for j, elem in enumerate(row):
+            if i == 0:
+                col = Column(name=ncols[j], col_idx=j)
+                if cols:
+                    col.left = cols[-1]
+                    cols[-1].right = col
+                cols.append(col)
+            if elem:
+                node = Node(
+                    row_idx=i,
+                    col_idx=j,
+                    col=cols[j],
+                )
+                cols[j].size += 1
+                up: Node | Column = node.col
+                while up.down:
+                    up = up.down
+                node.up = up
+                up.down = node
+                if row_nodes:
+                    node.left = row_nodes[-1]
+                    row_nodes[-1].right = node
+                row_nodes.append(node)
+        row_nodes[0].left = row_nodes[-1]
+        row_nodes[-1].right = row_nodes[0]
+
+    # point all the bottom nodes back to the top nodes and vice versa
+    for col in cols:
+        bottom = col.down
+        while bottom.down:
+            bottom = bottom.down
+        bottom.down = col
+        col.up = bottom
+
+    return Problem(root)

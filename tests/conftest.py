@@ -1,5 +1,8 @@
 import pytest
 
+from dlx.examples import PROBLEM
+from dlx.models import from_matrix
+
 
 @pytest.fixture
 def board_string():
@@ -31,3 +34,8 @@ def soln_string():
         "287|419|635\n"
         "345|286|179\n"
     )
+
+
+@pytest.fixture
+def example_problem():
+    return from_matrix(PROBLEM)

@@ -1,6 +1,6 @@
 from typing import Sequence
-from dlx.models import Problem
-from dlx.solve import search
+from dlx.models import Problem, from_matrix
+from dlx.search import search
 from sudoku.models import Board, Cell
 
 
@@ -9,7 +9,7 @@ def from_board(
 ) -> tuple[Problem, Sequence[Sequence[int]], tuple[str]]:
     matrix, column_names = remove_empty_cols(*to_matrix(board))
     return (
-        Problem.from_matrix(matrix=matrix, column_names=column_names),
+        from_matrix(matrix=matrix, column_names=column_names),
         matrix,
         column_names,
     )

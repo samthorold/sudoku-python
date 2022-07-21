@@ -1,11 +1,6 @@
-import logging
-
 from dlx.cover import cover
 from dlx.models import Problem
 from dlx.uncover import uncover
-
-
-logger = logging.getLogger(__name__)
 
 
 def search(
