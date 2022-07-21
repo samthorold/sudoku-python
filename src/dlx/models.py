@@ -7,7 +7,6 @@ from typing import Sequence
 class Node:
 
     row_idx: int
-    col_idx: int
     col: Column
     left: Node | None = None
     right: Node | None = None
@@ -19,7 +18,6 @@ class Node:
 class Column:
 
     name: str
-    col_idx: int
     left: Column | None = None
     right: Column | None = None
     up: Node | Column | None = None
@@ -51,7 +49,7 @@ def from_matrix(
 ) -> Column:
     """Build a Problem object from a sequence of rows."""
 
-    root = Column("__root__", -1)
+    root = Column("__root__")
 
     cols: list[Column] = []
     if column_names is None:
@@ -68,7 +66,7 @@ def from_matrix(
         row_nodes: list[Node] = []
         for j, elem in enumerate(row):
             if i == 0:
-                col = Column(name=ncols[j], col_idx=j)
+                col = Column(name=ncols[j])
                 if cols:
                     col.left = cols[-1]
                     cols[-1].right = col
@@ -76,7 +74,6 @@ def from_matrix(
             if elem:
                 node = Node(
                     row_idx=i,
-                    col_idx=j,
                     col=cols[j],
                 )
                 cols[j].size += 1
