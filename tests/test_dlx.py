@@ -1,7 +1,8 @@
 import pytest
 
-from sudoku.solve.dlx.models import Problem
-from sudoku.solve.dlx.solve import PROBLEM, search
+from dlx.examples import PROBLEM
+from dlx.models import Problem
+from dlx.solve import search
 
 
 def test_build_problem():

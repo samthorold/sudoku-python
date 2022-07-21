@@ -11,7 +11,7 @@ markers = [
 [tool.coverage.run]
 parallel = true
 branch = true
-source = ["sudoku",]
+source = ["sudoku", "dlx"]
 
 [tool.coverage.paths]
 source = ["src", ".tox/*/site-packages"]
