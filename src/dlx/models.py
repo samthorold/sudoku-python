@@ -24,9 +24,6 @@ class Column:
     down: Node | Column | None = None
     size: int = 0
 
-    def __repr__(self):
-        return f"<Column({self.name})>"
-
 
 def choose_column(root: Column) -> Column:
     """Choose the next Column object to cover."""
@@ -94,8 +91,8 @@ def from_matrix(
         bottom = col.down
         while bottom and bottom.down:
             bottom = bottom.down
-        if bottom:
-            bottom.down = col
+        assert bottom
+        bottom.down = col
         col.up = bottom
 
     return root

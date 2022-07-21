@@ -10,7 +10,6 @@ markers = [
 
 [tool.coverage.run]
 parallel = true
-branch = true
 source = ["sudoku", "dlx"]
 
 [tool.coverage.paths]
@@ -18,6 +17,11 @@ source = ["src", ".tox/*/site-packages"]
 
 [tool.coverage.report]
 show_missing = true
+skip_covered = true
+omit = [
+    "src/sudoku/cli.py",
+]
 exclude_lines = [
     "pragma: no cover",
+    "class .*\\bProtocol\\):"
 ]

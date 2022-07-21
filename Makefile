@@ -1,8 +1,16 @@
 test-watch:
 	find src tests -name "*.py" | entr venv/bin/python -m pytest src tests -vv
 
+test-cov:
+	venv/bin/python -m coverage run -m pytest src tests -vv
+	venv/bin/python -m coverage combine
+	venv/bin/python -m coverage report
+
 fmt-watch:
 	find src tests -name "*.py" | entr venv/bin/python -m black src tests
 
 types-watch:
 	find src tests -name "*.py" | entr venv/bin/python -m mypy src tests
+
+types:
+	venv/bin/python -m mypy src tests

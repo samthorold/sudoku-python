@@ -1,6 +1,7 @@
+from multiprocessing.sharedctypes import Value
 import pytest
 
-from sudoku.models import Board
+from sudoku.models import Board, InvalidBoard, invalid_board
 
 
 def test_board_str(board_string):
@@ -49,3 +50,14 @@ def test_cannot_unset_original_cell(board_string):
     addr = "11"
     board.unset(addr)
     assert board[addr].val == "5"
+
+
+def test_valid_board(board_string):
+    assert not invalid_board(board_string)
+    assert invalid_board(board_string[:-1])
+
+
+def test_from_string(board_string):
+    _ = Board.from_string(board_string)
+    with pytest.raises(InvalidBoard):
+        _ = Board.from_string(board_string[:-1])

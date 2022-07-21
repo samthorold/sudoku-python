@@ -59,7 +59,7 @@ class InvalidBoard(Exception):
     """"""
 
 
-def valid_board(string: str):
+def invalid_board(string: str):
     err = {}
     if not len(string) == 81:
         err["msg"] = "Incorrect number of cells"
@@ -75,7 +75,7 @@ class Board:
     @classmethod
     def from_string(cls, string: str) -> Board:
         board = cls()
-        if err := valid_board(string):
+        if err := invalid_board(string):
             raise InvalidBoard(err["msg"])
         for addr, val in zip(board, string):
             if val != ".":
@@ -133,17 +133,11 @@ class Board:
 
     def next(self, addr: str) -> str:
         col, row = [int(x) for x in addr]
-        if col == self.SIZE and row == self.SIZE:
-            return "11"
         if col < self.SIZE:
             return f"{col + 1}{row}"
         return f"1{row + 1}"
 
     def set(self, addr: str, val: str) -> None:
-        if not val or len(val) > 1:
-            raise ValueError(f"Must provide value of length 1: {val=}")
-        if val not in self.OPTIONS:
-            raise ValueError(f"{val} not in {self.OPTIONS}")
         if not self[addr].is_set():
             self._set_count += 1
             self[addr].val = val
