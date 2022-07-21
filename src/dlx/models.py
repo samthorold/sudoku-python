@@ -56,15 +56,6 @@ class Column:
 class Problem:
     root: Column
 
-    def select_col(self, col_idx):
-        j = 0
-        col = self.root.right
-        while col and col.name != "__root__":
-            if j == col_idx:
-                return col
-            j += 1
-            col = col.right
-
     def choose_column(self) -> Column:
         """Choose the next Column object to cover."""
         col = self.root.right
