@@ -11,5 +11,6 @@ venv/
 
 *.swp
 .idea
+.vscode
 
 profile

@@ -1,6 +1,6 @@
 import logging
 
-from sudoku.models import Board
+from sudoku.models import Board, Solver
 from sudoku.solve.dlx.models import Column, Node, Problem, populate_board
 
 
@@ -110,10 +110,11 @@ def search(
     return soln
 
 
-def solve(board: Board, naive: bool = False, **kwargs) -> tuple[Board, int]:
-    """Solve a sudoku puzzle."""
+class Dlx:
+    def solve(self, board: Board, naive: bool = False, **kwargs) -> Board:
+        """Solve a sudoku puzzle."""
 
-    pr, m, c = Problem.from_board(board)
-    soln = search(pr, soln_length=81, naive=naive)
-    soln_matrix = [x for i, x in enumerate(m) if i in soln]
-    return populate_board(board=board, matrix=soln_matrix, col_names=c), 0
+        pr, m, c = Problem.from_board(board)
+        soln = search(pr, soln_length=81, naive=naive)
+        soln_matrix = [x for i, x in enumerate(m) if i in soln]
+        return populate_board(board=board, matrix=soln_matrix, col_names=c)

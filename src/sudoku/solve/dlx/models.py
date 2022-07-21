@@ -129,7 +129,9 @@ class Problem:
         return Problem(root)
 
     @staticmethod
-    def from_board(board: Board) -> Problem:
+    def from_board(
+        board: Board,
+    ) -> tuple[Problem, Iterable[Iterable[int]], tuple[str]]:
         matrix, column_names = remove_empty_cols(*to_matrix(board))
         return Problem.from_matrix(matrix, iter(column_names)), matrix, column_names
 

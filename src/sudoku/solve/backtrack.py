@@ -1,6 +1,6 @@
 from typing import Iterator
 
-from sudoku.models import Board
+from sudoku.models import Board, Solver
 
 
 def candidate_boards(board: Board, addr: str, depth: int = 0) -> Iterator[Board]:
@@ -12,10 +12,13 @@ def candidate_boards(board: Board, addr: str, depth: int = 0) -> Iterator[Board]
         board.unset(addr)
 
 
-def solve(board: Board, iterations: int = 10000, **kwargs) -> tuple[Board, int]:
-    """Solve a sudoku puzzle."""
+class Backtrack:
+    def solve(self, board: Board, iterations: int = 10000, **kwargs) -> Board:
+        """Solve a sudoku puzzle."""
 
-    for t, b in enumerate(candidate_boards(board, "11"), 1):
-        if t >= iterations or b.is_completed():
-            break
-    return b, t
+        b = board
+
+        for t, b in enumerate(candidate_boards(board, "11"), 1):
+            if t >= iterations or b.is_completed():
+                break
+        return b

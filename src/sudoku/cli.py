@@ -1,12 +1,8 @@
 import argparse
 import logging
-import sys
 
-from sudoku.models import Board
-from sudoku.solve import backtrack, dlx
-
-
-SOLVERS = {"backtrack": backtrack, "dlx": dlx}
+from sudoku.models import Board, Solver
+from sudoku.solve import Backtrack, Dlx
 
 
 parser = argparse.ArgumentParser()
@@ -23,9 +19,11 @@ if __name__ == "__main__":
 
     logging.basicConfig(level=args.log_level)
 
+    solvers: dict[str, Solver] = {"backtrack": Backtrack(), "dlx": Dlx()}
+
     board = Board.from_string(args.board_string)
     print(board)
-    solved_board, *addl = SOLVERS[args.method].solve(
+    solved_board = solvers[args.method].solve(
         board=board,
         iterations=args.iterations,
         display=args.display,

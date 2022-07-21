@@ -1,6 +1,6 @@
 from __future__ import annotations
-import copy
 from dataclasses import dataclass
+from typing import Protocol
 
 
 BOARDS = [
@@ -16,6 +16,11 @@ BOARDS = [
         "....8..79"
     ),
 ]
+
+
+class Solver(Protocol):
+    def solve(self, board: Board, *args, **kwargs) -> Board:
+        ...
 
 
 def box(col, row):
