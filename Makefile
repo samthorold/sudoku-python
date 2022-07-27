@@ -4,7 +4,7 @@ test-watch:
 test-cov:
 	venv/bin/python -m coverage run -m pytest src tests -vv
 	venv/bin/python -m coverage combine
-	venv/bin/python -m coverage report
+	venv/bin/python -m coverage report --fail-under=100
 
 fmt-watch:
 	find src tests -name "*.py" | entr venv/bin/python -m black src tests
