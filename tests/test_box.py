@@ -1,6 +1,6 @@
 import pytest
 
-from sudoku.models import box
+from yass.models import box
 
 
 @pytest.mark.very_unit

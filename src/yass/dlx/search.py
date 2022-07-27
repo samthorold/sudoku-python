@@ -1,6 +1,6 @@
-from dlx.cover import cover
-from dlx.models import Column, Node, choose_column
-from dlx.uncover import uncover
+from yass.dlx.cover import cover
+from yass.dlx.models import Column, Node, choose_column
+from yass.dlx.uncover import uncover
 
 
 def search(

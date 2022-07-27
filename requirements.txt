@@ -1,5 +1,0 @@
-
-
-# profiling
-snakeviz<=2.2
-

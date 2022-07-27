@@ -1,4 +1,4 @@
-from dlx.models import Column, Node
+from yass.dlx.models import Column, Node
 
 
 def uncover(col: Column):

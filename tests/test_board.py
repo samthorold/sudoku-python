@@ -1,7 +1,6 @@
-from multiprocessing.sharedctypes import Value
 import pytest
 
-from sudoku.models import Board, InvalidBoard, invalid_board
+from yass.models import Board, InvalidBoard, invalid_board
 
 
 def test_board_str(board_string):
