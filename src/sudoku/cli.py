@@ -9,7 +9,6 @@ parser = argparse.ArgumentParser()
 parser.add_argument("method")
 parser.add_argument("board_string")
 parser.add_argument("--log_level", default="CRITICAL")
-parser.add_argument("--display", action="store_true")
 
 
 if __name__ == "__main__":
@@ -21,8 +20,5 @@ if __name__ == "__main__":
 
     board = Board.from_string(args.board_string)
     print(board)
-    solved_board = solvers[args.method].solve(
-        board=board,
-        display=args.display,
-    )
+    solved_board = solvers[args.method].solve(board=board)
     print(solved_board)
