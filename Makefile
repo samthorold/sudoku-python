@@ -2,7 +2,7 @@ test-watch:
 	find src tests -name "*.py" | entr venv/bin/python -m pytest src tests -vv
 
 test-cov:
-	venv/bin/python -m coverage run -m pytest src tests -vv
+	venv/bin/python -m coverage run -m pytest src tests -vv --cov-fail-under=100
 	venv/bin/python -m coverage combine
 	venv/bin/python -m coverage report
 
