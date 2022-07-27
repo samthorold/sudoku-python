@@ -2,6 +2,29 @@
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "yass"
+description = "Yet another sudoku solver"
+version = 0.3
+author = "Sam Thorold"
+author_email = "sam.thorold@gmail.com"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest-cov",
+    "tox",
+    "black",
+    "mkdocstrings[python-legacy]",
+    "mkdocstrings-material",
+    "mypy",
+]
+
+
 [tool.pytest.ini_options]
 addopts = "--doctest-modules -m \"not very_unit\""
 markers = [
