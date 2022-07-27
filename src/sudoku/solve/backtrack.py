@@ -15,12 +15,10 @@ def candidate_boards(board: Board, addr: str, depth: int = 0) -> Iterator[Board]
 
 
 class Backtrack:
-    def solve(self, board: Board, iterations: int = 10000, **kwargs) -> Board:
+    def solve(self, board: Board, **kwargs) -> Board:
         """Solve a sudoku puzzle."""
 
-        b = board
-
-        for t, b in enumerate(candidate_boards(board, "11"), 1):
-            if t >= iterations or b.is_completed():
+        for board in candidate_boards(board, "11"):
+            if board.is_completed():
                 break
-        return b
+        return board
