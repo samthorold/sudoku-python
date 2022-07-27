@@ -40,7 +40,9 @@ class Cell:
 
     def with_val(self, val: str) -> Cell:
         if self.is_set():
-            raise ValueError(f"{self} is set, not setting to {val}")
+            raise ValueError(
+                f"(col={self.col}, row={self.row}) is set, not setting to {val}"
+            )
         return Cell(col=self.col, row=self.row, box=self.box, val=val, og=self.og)
 
     def neighbour(self, c: Cell) -> bool:
