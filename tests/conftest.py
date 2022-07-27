@@ -1,7 +1,7 @@
 import pytest
 
-from dlx.examples import PROBLEM
-from dlx.models import from_matrix
+from yass.dlx.examples import PROBLEM
+from yass.dlx.models import from_matrix
 
 
 @pytest.fixture

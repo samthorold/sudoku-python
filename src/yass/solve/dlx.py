@@ -1,7 +1,8 @@
 from typing import Sequence
-from dlx.models import Column, from_matrix
-from dlx.search import search
-from sudoku.models import Board, Cell
+
+from yass.dlx.models import Column, from_matrix
+from yass.dlx.search import search
+from yass.models import Board, Cell
 
 
 def from_board(

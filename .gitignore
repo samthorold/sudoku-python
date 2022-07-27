@@ -18,3 +18,5 @@ build/
 profile
 
 .coverage
+
+.DS_Store

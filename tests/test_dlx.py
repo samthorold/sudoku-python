@@ -1,8 +1,8 @@
 import pytest
 
-from dlx.examples import PROBLEM
-from dlx.models import Column, choose_column, from_matrix
-from dlx.search import search
+from yass.dlx.examples import PROBLEM
+from yass.dlx.models import Column, choose_column, from_matrix
+from yass.dlx.search import search
 
 
 def test_build_problem():

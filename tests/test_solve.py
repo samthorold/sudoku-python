@@ -1,7 +1,7 @@
 import pytest
 
-from sudoku.models import Board
-from sudoku.solve import Backtrack, Dlx
+from yass.models import Board
+from yass.solve import Backtrack, Dlx
 
 
 @pytest.mark.parametrize("solver", (Dlx, Backtrack))

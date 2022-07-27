@@ -1,6 +1,6 @@
 import pytest
 
-from sudoku.models import Cell
+from yass.models import Cell
 
 
 def test_is_set():

@@ -1,6 +1,6 @@
 from typing import Iterator
 
-from sudoku.models import Board, Solver
+from yass.models import Board, Solver
 
 
 def candidate_boards(board: Board, addr: str, depth: int = 0) -> Iterator[Board]:

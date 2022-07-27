@@ -14,3 +14,10 @@ types-watch:
 
 types:
 	venv/bin/python -m mypy src tests
+
+install:
+	venv/bin/python -m pip uninstall -y yass
+	rm -rf build
+	rm -rf src/yass.egg-info
+	venv/bin/python -m pip install --upgrade ".[dev]"
+
