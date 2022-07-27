@@ -58,7 +58,7 @@ jobs:
         if: ${{ failure() }}
 
   type:
-    name: Test on ${{ matrix.python-version }}
+    name: Type on ${{ matrix.python-version }}
     runs-on: ubuntu-latest
 
     strategy:
