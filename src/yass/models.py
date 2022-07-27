@@ -18,6 +18,10 @@ BOARDS = [
 ]
 
 
+def f():
+    invalid_board(5)
+
+
 class Solver(Protocol):
     def solve(self, board: Board, **kwargs) -> Board:
         ...
