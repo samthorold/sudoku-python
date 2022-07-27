@@ -18,10 +18,6 @@ BOARDS = [
 ]
 
 
-def f():
-    return 3
-
-
 class Solver(Protocol):
     def solve(self, board: Board, **kwargs) -> Board:
         ...
