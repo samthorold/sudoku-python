@@ -57,7 +57,7 @@ jobs:
           path: htmlcov
         if: ${{ failure() }}
 
-  test:
+  type:
     name: Test on ${{ matrix.python-version }}
     runs-on: ubuntu-latest
 
