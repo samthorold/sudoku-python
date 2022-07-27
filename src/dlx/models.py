@@ -42,7 +42,7 @@ def choose_column(root: Column) -> Column:
 
 def from_matrix(
     matrix: Sequence[Sequence[int]],
-    column_names: tuple[str, ...] | None = None,
+    column_names: Sequence[str] | None = None,
 ) -> Column:
     """Build a Problem object from a sequence of rows."""
 
@@ -50,7 +50,7 @@ def from_matrix(
 
     cols: list[Column] = []
     if column_names is None:
-        ncols = tuple(str(i) for i in range(len(matrix[0])))
+        ncols: Sequence[str] = [str(i) for i in range(len(matrix[0]))]
     else:
         ncols = column_names
 
