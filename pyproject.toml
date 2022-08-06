@@ -3,10 +3,10 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "yass"
+name = "yasspy"
 description = "Yet another sudoku solver"
 readme = "README.md"
-version = "0.3.0"
+version = "0.3.2"
 authors = [
     {name = "Sam Thorold"},
     {email = "sam.thorold@gmail.com"}

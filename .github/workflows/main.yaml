@@ -88,4 +88,9 @@ jobs:
       - run: python -m build --sdist --wheel .
       - run: check-wheel-contents dist/*.whl
       - run: python -m twine check dist/*
-
+      - name: Publish distribution 📦 to Test PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+          verbose: true
