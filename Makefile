@@ -10,10 +10,10 @@ fmt-watch:
 	find src tests -name "*.py" | entr venv/bin/python -m black src tests
 
 types-watch:
-	find src tests -name "*.py" | entr venv/bin/python -m mypy src tests
+	find src tests -name "*.py" | entr venv/bin/python -m mypy --strict src tests
 
 types:
-	venv/bin/python -m mypy src tests
+	venv/bin/python -m mypy --strict src tests
 
 install:
 	venv/bin/python -m pip uninstall -y yass

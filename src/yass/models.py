@@ -1,6 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Iterator, List, Protocol
 
 
 BOARDS = [
@@ -19,11 +19,11 @@ BOARDS = [
 
 
 class Solver(Protocol):
-    def solve(self, board: Board, **kwargs) -> Board:
+    def solve(self, board: Board) -> Board:
         ...
 
 
-def box(col, row):
+def box(col: int, row: int) -> int:
     return (col - 1) // 3 + 3 * ((row - 1) // 3) + 1
 
 
@@ -35,7 +35,7 @@ class Cell:
     val: str | None = None
     og: bool = False
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.val or '.'}"
 
     def with_val(self, val: str) -> Cell:
@@ -50,10 +50,10 @@ class Cell:
             return False
         return (self.col == c.col) or (self.row == c.row) or (self.box == c.box)
 
-    def is_set(self):
+    def is_set(self) -> bool:
         return self.val is not None
 
-    def can_unset(self):
+    def can_unset(self) -> bool:
         return not self.og
 
 
@@ -61,7 +61,7 @@ class InvalidBoard(Exception):
     """"""
 
 
-def invalid_board(string: str):
+def invalid_board(string: str) -> dict[str, str]:
     err = {}
     if not len(string) == 81:
         err["msg"] = "Incorrect number of cells"
@@ -85,7 +85,7 @@ class Board:
                 board[addr].og = True
         return board
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._set_count = 0
         self._cells = {
             f"{col}{row}": Cell(
@@ -104,13 +104,13 @@ class Board:
             for col in range(1, self.SIZE + 1)
         }
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[str]:
         return iter(self._cells)
 
-    def __getitem__(self, k) -> Cell:
+    def __getitem__(self, k: str) -> Cell:
         return self._cells[k]
 
-    def __str__(self):
+    def __str__(self) -> str:
         s = ""
         for row in range(1, self.SIZE + 1):
             for col in range(1, self.SIZE + 1):
@@ -122,11 +122,12 @@ class Board:
                 s += "---|---|---\n"
         return s
 
-    def items(self):
-        return self._cells.items()
+    def items(self) -> Iterator[tuple[str, Cell]]:
+        return iter(self._cells.items())
 
-    def neighbour_vals(self, addr):
-        return set(c.val for c in self._neighbours[addr] if c.is_set())
+    def neighbour_vals(self, addr: str) -> set[str]:
+        # return set(c.val for c in self._neighbours[addr] if c.is_set())
+        return set(c.val for c in self._neighbours[addr] if c.val)
 
     def candidates(self, addr: str) -> str | None:
         if self[addr].is_set():

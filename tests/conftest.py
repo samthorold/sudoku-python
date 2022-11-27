@@ -1,11 +1,11 @@
 import pytest
 
 from yass.dlx.examples import PROBLEM
-from yass.dlx.models import from_matrix
+from yass.dlx.models import Column, from_matrix
 
 
 @pytest.fixture
-def board_string():
+def board_string() -> str:
     return (
         "53..7...."
         "6..195..."
@@ -20,7 +20,7 @@ def board_string():
 
 
 @pytest.fixture
-def soln_string():
+def soln_string() -> str:
     return (
         "534|678|912\n"
         "672|195|348\n"
@@ -37,5 +37,5 @@ def soln_string():
 
 
 @pytest.fixture
-def example_problem():
+def example_problem() -> Column:
     return from_matrix(PROBLEM)
