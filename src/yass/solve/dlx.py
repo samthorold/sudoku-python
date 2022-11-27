@@ -72,6 +72,8 @@ def populate_board(
     board: Board, matrix: Sequence[Sequence[int]], col_names: tuple[str, ...]
 ) -> Board:
 
+    addr = val = ""
+
     for row in matrix:
         addr_found = False
         for col, name in zip(row, col_names):
@@ -87,7 +89,7 @@ def populate_board(
 
 
 class Dlx:
-    def solve(self, board: Board, **kwargs) -> Board:
+    def solve(self, board: Board) -> Board:
         """Solve a sudoku puzzle."""
 
         col, m, c = from_board(board)

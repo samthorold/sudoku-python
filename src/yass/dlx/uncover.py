@@ -1,7 +1,7 @@
 from yass.dlx.models import Column, Node
 
 
-def uncover(col: Column):
+def uncover(col: Column) -> None:
     """Include the Column and associated rows in the search."""
     assert col.left and col.right
     cover_node = col.up

@@ -3,7 +3,7 @@ import pytest
 from yass.models import Cell
 
 
-def test_is_set():
+def test_is_set() -> None:
     c = Cell("", "", "")
     assert not c.is_set()
 

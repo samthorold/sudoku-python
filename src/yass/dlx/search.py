@@ -8,7 +8,7 @@ def search(
     depth: int = 0,
     soln: list[int] | None = None,
     soln_length: int | None = None,
-):
+) -> list[int]:
     """Recursive algorithm for exact cover problem."""
 
     soln = [] if soln is None else soln

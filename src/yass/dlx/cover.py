@@ -1,7 +1,7 @@
 from yass.dlx.models import Column, Node
 
 
-def cover(col: Column):
+def cover(col: Column) -> None:
     """Exclude the Column and associated rows from the search."""
     assert col.left and col.right
     col.left.right = col.right

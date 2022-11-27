@@ -13,8 +13,8 @@ app = typer.Typer()
 def solve(
     method: str = typer.Argument(..., help="Options: 'backtrack', 'dlx'"),
     board_string: str = typer.Argument(...),
-    log_level: str = typer.Option("CRITICAL", help="Log level")
-):
+    log_level: str = typer.Option("CRITICAL", help="Log level"),
+) -> None:
 
     logging.basicConfig(level=log_level)
 
@@ -27,5 +27,5 @@ def solve(
 
 
 @app.command()
-def generate():
+def generate() -> None:
     print("Not implemented")

@@ -90,5 +90,5 @@ from yass.models import box
         (9, 9, 9),
     ),
 )
-def test_box(col, row, exp):
+def test_box(col: int, row: int, exp: int) -> None:
     assert box(col, row) == exp

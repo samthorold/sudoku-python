@@ -15,7 +15,7 @@ def candidate_boards(board: Board, addr: str, depth: int = 0) -> Iterator[Board]
 
 
 class Backtrack:
-    def solve(self, board: Board, **kwargs) -> Board:
+    def solve(self, board: Board) -> Board:
         """Solve a sudoku puzzle."""
 
         for board in candidate_boards(board, "11"):
